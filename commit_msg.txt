@@ -1,5 +1,0 @@
-feat: scaffold initial LivestockOS — gestion elevage mobile eleveurs saheliens
-
-Part of FORGE Afrika ecosystem.
-
-Co-authored-by: Claude <claude@anthropic.com>
