@@ -1,6 +1,6 @@
 'use client'
 
-import type { CSSProperties } from 'react'
+import { useEffect, useState, type CSSProperties } from 'react'
 import {
   LineChart,
   Line,
@@ -129,6 +129,50 @@ export function VentesAchatsChart() {
         />
         <Bar dataKey="ventes" fill="#D4AF37" radius={[4, 4, 0, 0]} />
         <Bar dataKey="achats" fill="#00BCD4" radius={[4, 4, 0, 0]} />
+      </BarChart>
+    </ResponsiveContainer>
+  )
+}
+
+export function ValeurTroupeauBarChart({ data }: { data: ValeurPoint[] }) {
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  if (!mounted) {
+    return (
+      <div className="h-[200px] flex items-center justify-center text-white/20 text-xs">
+        Chargement du graphique…
+      </div>
+    )
+  }
+
+  return (
+    <ResponsiveContainer width="100%" height={200}>
+      <BarChart
+        data={data}
+        margin={{ top: 5, right: 10, left: -20, bottom: 5 }}
+      >
+        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+        <XAxis
+          dataKey="mois"
+          tick={TICK_STYLE}
+          axisLine={false}
+          tickLine={false}
+        />
+        <YAxis
+          tick={TICK_STYLE}
+          axisLine={false}
+          tickLine={false}
+          tickFormatter={(v) => `${v}M`}
+        />
+        <Tooltip
+          contentStyle={TOOLTIP_STYLE}
+          formatter={(v) => [`${v}M FCFA`, 'Valeur troupeau']}
+        />
+        <Bar dataKey="valeur" fill="#D4AF37" radius={[4, 4, 0, 0]} />
       </BarChart>
     </ResponsiveContainer>
   )

@@ -6,7 +6,7 @@ import LogoutButton from './LogoutButton'
 
 const NAV = [
   { href: '/dashboard', label: 'Accueil', icon: '🏠' },
-  { href: '/dashboard/cheptel', label: 'Cheptel', icon: '🐄' },
+  { href: '/dashboard/animaux', label: 'Animaux', icon: '🐄' },
   { href: '/dashboard/sante', label: 'Santé', icon: '🩺' },
   { href: '/dashboard/mouvements', label: 'Mouvements', icon: '🚛' },
   { href: '/dashboard/marche', label: 'Marché', icon: '📊' },

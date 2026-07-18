@@ -119,7 +119,7 @@ export default async function DashboardPage() {
         </h2>
         <div className="grid grid-cols-2 gap-3">
           {[
-            { href: '/dashboard/cheptel', label: '+ Ajouter animal', icon: '🐄' },
+            { href: '/dashboard/animaux', label: '+ Ajouter animal', icon: '🐄' },
             { href: '/dashboard/sante', label: '+ Soin / vaccin', icon: '🩺' },
             { href: '/dashboard/mouvements', label: '+ Enregistrer vente', icon: '💰' },
             { href: '/dashboard/marche', label: 'Prix du marché', icon: '📊' },

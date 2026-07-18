@@ -22,8 +22,8 @@ const ETAPES: Etape[] = [
     description:
       'Commencez par enregistrer votre cheptel. Chaque animal reçoit un identifiant unique : espèce, sexe, âge, poids et valeur estimée.',
     icon: '🐄',
-    action: 'Aller au cheptel',
-    href: '/dashboard/cheptel',
+    action: 'Aller aux animaux',
+    href: '/dashboard/animaux',
   },
   {
     numero: 2,
