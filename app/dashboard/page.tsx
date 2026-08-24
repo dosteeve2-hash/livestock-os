@@ -1,4 +1,5 @@
-import { createClient } from '@/lib/supabase/server'
+import { headers } from 'next/headers'
+import { auth } from '@/lib/auth/server'
 import DashboardClient from './DashboardClient'
 
 const STATS = [
@@ -24,9 +25,9 @@ const MOUVEMENTS = [
 ]
 
 export default async function DashboardPage() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  const prenom = user?.user_metadata?.nom?.split(' ')[0] ?? user?.email?.split('@')[0] ?? 'Éleveur'
+  const session = await auth.api.getSession({ headers: await headers() })
+  const user = session?.user
+  const prenom = user?.name?.split(' ')[0] ?? user?.email?.split('@')[0] ?? 'Éleveur'
 
   return (
     <DashboardClient

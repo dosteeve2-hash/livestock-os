@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
-import { createClient } from '@/lib/supabase/server'
+import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
+import { auth } from '@/lib/auth/server'
 import Link from 'next/link'
 import LogoutButton from './LogoutButton'
 import { UserIdProvider } from './UserContext'
@@ -21,15 +22,14 @@ export default async function DashboardLayout({
 }: {
   children: ReactNode
 }) {
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  // Validation réelle de la session : le proxy ne fait qu'un contrôle de cookie.
+  const session = await auth.api.getSession({ headers: await headers() })
 
-  if (!user) {
+  if (!session) {
     redirect('/auth/login')
   }
 
+  const user = session.user
   const isDemo = user.email === 'demo@livestockos.app'
 
   return (

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { createClient } from '@/lib/supabase/client'
+import { authClient } from '@/lib/auth/client'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
 
@@ -60,9 +60,8 @@ export default function OnboardingPage() {
   const router = useRouter()
 
   useEffect(() => {
-    const supabase = createClient()
-    supabase.auth.getUser().then(({ data }) => {
-      setIsDemo(data.user?.email === 'demo@livestockos.app')
+    authClient.getSession().then(({ data }) => {
+      setIsDemo(data?.user?.email === 'demo@livestockos.app')
     })
   }, [])
 

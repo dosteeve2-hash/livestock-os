@@ -1,25 +1,30 @@
 'use server'
 
-import { createClient } from '@/lib/supabase/server'
+import { APIError } from 'better-auth/api'
 import { redirect } from 'next/navigation'
+import { auth } from '@/lib/auth/server'
 
 export async function loginAction(
   _prevState: { error: string } | null,
   formData: FormData
 ): Promise<{ error: string }> {
-  const supabase = await createClient()
-
-  const email = formData.get('email')?.toString() ?? ''
+  const email = formData.get('email')?.toString().trim() ?? ''
   const password = formData.get('password')?.toString() ?? ''
 
   if (!email || !password) {
     return { error: 'Email et mot de passe requis' }
   }
 
-  const { error } = await supabase.auth.signInWithPassword({ email, password })
-
-  if (error) {
-    return { error: 'Email ou mot de passe incorrect' }
+  try {
+    // Le plugin nextCookies pose le cookie de session depuis cette Server Action.
+    await auth.api.signInEmail({ body: { email, password } })
+  } catch (error) {
+    if (error instanceof APIError) {
+      // Message volontairement identique quel que soit le motif : ne pas
+      // révéler si l'adresse existe.
+      return { error: 'Email ou mot de passe incorrect' }
+    }
+    return { error: 'Connexion impossible. Vérifiez votre réseau et réessayez.' }
   }
 
   redirect('/dashboard')

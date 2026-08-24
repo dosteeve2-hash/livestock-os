@@ -1,8 +1,13 @@
 # LivestockOS — Instructions Claude
 
 ## Stack
-- Next.js 15 App Router + TypeScript strict (0 `any`)
-- Supabase SSR : TOUJOURS `getUser()`, JAMAIS `getSession()`
+- Next.js 16 App Router + TypeScript strict (0 `any`)
+- Neon Postgres + Better Auth (migration depuis Supabase le 24/08/2026)
+- Auth : `auth.api.getSession({ headers })` dans les Server Components ;
+  le proxy ne fait qu'un contrôle de cookie (`getSessionCookie`), la
+  validation reelle appartient au layout /dashboard
+- Donnees metier : store local offline-first (`lib/store/`), PAS la base.
+  Neon ne porte aujourd'hui que l'authentification.
 - PWA offline-first (Workbox) — priorité mobile
 - Framer Motion : `type: 'spring' as const`
 - Charte : Navy #0A1628, Gold #D4AF37, Cyan #00BCD4
