@@ -2,40 +2,11 @@
 
 import { useMemo, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-
-// ─── Types ────────────────────────────────────────────────────────────────────
-
-type Espece = 'Bovin' | 'Ovin' | 'Caprin' | 'Volaille'
-type Sexe = 'Mâle' | 'Femelle'
-type EtatSante = 'Sain' | 'Traitement' | 'Observation'
-
-interface Animal {
-  id: string
-  espece: Espece
-  race: string
-  sexe: Sexe
-  age: string
-  poids: string
-  etatSante: EtatSante
-  dateVaccination: string
-  valeur: number
-}
-
-// ─── Données mock ─────────────────────────────────────────────────────────────
-
-const MOCK_ANIMAUX: Animal[] = [
-  { id: 'BV-001', espece: 'Bovin', race: 'Zébu Peul', sexe: 'Mâle', age: '4 ans', poids: '380 kg', etatSante: 'Sain', dateVaccination: '2026-12-14', valeur: 485000 },
-  { id: 'BV-002', espece: 'Bovin', race: 'Zébu Peul', sexe: 'Femelle', age: '3 ans', poids: '290 kg', etatSante: 'Sain', dateVaccination: '2026-11-20', valeur: 365000 },
-  { id: 'BV-003', espece: 'Bovin', race: 'Azawak', sexe: 'Femelle', age: '5 ans', poids: '310 kg', etatSante: 'Observation', dateVaccination: '2026-08-05', valeur: 380000 },
-  { id: 'OV-001', espece: 'Ovin', race: 'Mouton Djallonké', sexe: 'Mâle', age: '2 ans', poids: '45 kg', etatSante: 'Sain', dateVaccination: '2026-07-21', valeur: 72000 },
-  { id: 'OV-002', espece: 'Ovin', race: 'Mouton Peul-Peul', sexe: 'Femelle', age: '1.5 ans', poids: '38 kg', etatSante: 'Sain', dateVaccination: '2026-09-10', valeur: 58000 },
-  { id: 'OV-003', espece: 'Ovin', race: 'Mouton Djallonké', sexe: 'Mâle', age: '3 ans', poids: '52 kg', etatSante: 'Traitement', dateVaccination: '2026-07-17', valeur: 78000 },
-  { id: 'CP-001', espece: 'Caprin', race: 'Chèvre Sahélienne', sexe: 'Mâle', age: '2 ans', poids: '38 kg', etatSante: 'Sain', dateVaccination: '2026-07-22', valeur: 52000 },
-  { id: 'CP-002', espece: 'Caprin', race: 'Chèvre Rousse de Maradi', sexe: 'Femelle', age: '1.5 ans', poids: '32 kg', etatSante: 'Sain', dateVaccination: '2026-10-02', valeur: 48000 },
-  { id: 'VL-001', espece: 'Volaille', race: 'Poule locale', sexe: 'Femelle', age: '8 mois', poids: '1.8 kg', etatSante: 'Sain', dateVaccination: '2026-08-15', valeur: 4500 },
-  { id: 'VL-002', espece: 'Volaille', race: 'Poule locale', sexe: 'Femelle', age: '6 mois', poids: '1.5 kg', etatSante: 'Sain', dateVaccination: '2026-08-15', valeur: 3800 },
-  { id: 'VL-003', espece: 'Volaille', race: 'Coq local', sexe: 'Mâle', age: '10 mois', poids: '2.2 kg', etatSante: 'Sain', dateVaccination: '2026-08-15', valeur: 5200 },
-]
+import { useCollection } from '@/lib/store/useCollection'
+import { ANIMAUX_SEED } from '@/lib/store/seed'
+import { COLLECTIONS, type Animal, type Espece, type EtatSante, type Sexe } from '@/lib/store/types'
+import { nextId } from '@/lib/store/store'
+import { useUserId } from '../UserContext'
 
 const ESPECES: Array<'Tous' | Espece> = ['Tous', 'Bovin', 'Ovin', 'Caprin', 'Volaille']
 
@@ -185,7 +156,7 @@ function ModalAjouterAnimal({
   function submit(e: React.FormEvent) {
     e.preventDefault()
     onAdd({
-      id: form.id || `${form.espece.slice(0, 2).toUpperCase()}-${Date.now().toString().slice(-4)}`,
+      id: form.id.trim() || nextId(form.espece.slice(0, 2).toUpperCase()),
       espece: form.espece,
       race: form.race || 'Race locale',
       sexe: form.sexe,
@@ -194,6 +165,8 @@ function ModalAjouterAnimal({
       etatSante: form.etatSante,
       dateVaccination: form.dateVaccination,
       valeur: Number(form.valeur) || 0,
+      vendu: false,
+      createdAt: new Date().toISOString().slice(0, 10),
     })
     onClose()
   }
@@ -363,7 +336,11 @@ function ModalAjouterAnimal({
 // ─── Page principale ──────────────────────────────────────────────────────────
 
 export default function AnimauxPage() {
-  const [animaux, setAnimaux] = useState<Animal[]>(MOCK_ANIMAUX)
+  const userId = useUserId()
+  const [tous, api] = useCollection<Animal>(userId, COLLECTIONS.animaux, ANIMAUX_SEED)
+
+  // Le registre montre le cheptel vivant ; un animal vendu en sort.
+  const animaux = useMemo(() => tous.filter((a) => !a.vendu), [tous])
   const [filtreEspece, setFiltreEspece] = useState<'Tous' | Espece>('Tous')
   const [recherche, setRecherche] = useState('')
   const [ficheAnimal, setFicheAnimal] = useState<Animal | null>(null)
@@ -519,7 +496,7 @@ export default function AnimauxPage() {
         {modalAjout && (
           <ModalAjouterAnimal
             onClose={() => setModalAjout(false)}
-            onAdd={a => setAnimaux(prev => [a, ...prev])}
+            onAdd={a => api.add(a)}
           />
         )}
       </AnimatePresence>

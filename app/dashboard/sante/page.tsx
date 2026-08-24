@@ -1,86 +1,19 @@
 'use client'
 
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-
-// ─── Types ────────────────────────────────────────────────────────────────────
-
-type TypeSoin = 'Vaccination' | 'Traitement' | 'Contrôle'
-type StatutSoin = 'Planifié' | 'En cours' | 'Fait'
-
-interface Soin {
-  id: string
-  date: string
-  animal: string
-  groupe: string
-  type: TypeSoin
-  description: string
-  veterinaire: string
-  cout: number
-  statut: StatutSoin
-  prochaine?: string
-}
-
-// ─── Données mock ─────────────────────────────────────────────────────────────
-
-const MOCK_SOINS: Soin[] = [
-  {
-    id: '1', date: '2026-07-14', animal: 'BV-001', groupe: 'Bovins',
-    type: 'Vaccination', description: 'Fièvre aphteuse',
-    veterinaire: 'Dr Konaté', cout: 15000, statut: 'Fait', prochaine: '2026-12-14',
-  },
-  {
-    id: '2', date: '2026-07-10', animal: 'OV-003', groupe: 'Ovins',
-    type: 'Traitement', description: 'Parasites intestinaux — Albendazole',
-    veterinaire: 'Dr Diallo', cout: 8500, statut: 'En cours', prochaine: '2026-07-17',
-  },
-  {
-    id: '3', date: '2026-07-01', animal: 'BV-002', groupe: 'Bovins',
-    type: 'Vaccination', description: 'Charbon bactéridien',
-    veterinaire: 'Dr Konaté', cout: 12000, statut: 'Fait', prochaine: '2026-11-20',
-  },
-  {
-    id: '4', date: '2026-07-18', animal: 'CP-001', groupe: 'Caprins',
-    type: 'Vaccination', description: 'Pasteurellose',
-    veterinaire: 'Dr Traoré', cout: 9000, statut: 'Planifié',
-  },
-  {
-    id: '5', date: '2026-07-16', animal: 'OV-001', groupe: 'Ovins',
-    type: 'Vaccination', description: 'Clavelée',
-    veterinaire: 'Dr Diallo', cout: 7500, statut: 'Planifié',
-  },
-  {
-    id: '6', date: '2026-07-20', animal: 'BV-003', groupe: 'Bovins',
-    type: 'Contrôle', description: 'Bilan mensuel de santé',
-    veterinaire: 'Dr Konaté', cout: 5000, statut: 'Planifié',
-  },
-  {
-    id: '7', date: '2026-07-05', animal: 'CP-002', groupe: 'Caprins',
-    type: 'Traitement', description: 'Gale — Ivermectine',
-    veterinaire: 'Dr Traoré', cout: 6000, statut: 'Fait',
-  },
-]
-
-// Animaux malades (statut En cours avec traitement)
-const ANIMAUX_MALADES = MOCK_SOINS.filter(
-  s => s.statut === 'En cours' && s.type === 'Traitement',
-)
-
-// Vaccinations dans les 7 prochains jours
-const AUJOURDHUI = new Date('2026-07-14')
-const DANS_7J = new Date('2026-07-21')
-const VACCINS_A_VENIR = MOCK_SOINS.filter(s => {
-  if (s.statut === 'Fait') return false
-  const d = new Date(s.date)
-  return d >= AUJOURDHUI && d <= DANS_7J
-})
-
-// Stats mois courant (juillet 2026)
-const SOINS_CE_MOIS = MOCK_SOINS.filter(s => s.date.startsWith('2026-07'))
-const COUT_TOTAL = SOINS_CE_MOIS.reduce((acc, s) => acc + s.cout, 0)
-const NB_MORTS = 0
-const NB_TOTAL_ANIMAUX = 12
-const TAUX_MORTALITE = ((NB_MORTS / NB_TOTAL_ANIMAUX) * 100).toFixed(1)
+import { useCollection } from '@/lib/store/useCollection'
+import { ANIMAUX_SEED, SOINS_SEED } from '@/lib/store/seed'
+import {
+  COLLECTIONS,
+  GROUPE_PAR_ESPECE,
+  type Animal,
+  type Soin,
+  type StatutSoin,
+  type TypeSoin,
+} from '@/lib/store/types'
+import { nextId } from '@/lib/store/store'
+import { useUserId } from '../UserContext'
 
 // ─── Utils ────────────────────────────────────────────────────────────────────
 
@@ -96,8 +29,14 @@ function formatDate(d: string) {
   })
 }
 
+function debutDuJour() {
+  const d = new Date()
+  d.setHours(0, 0, 0, 0)
+  return d
+}
+
 function joursRestants(d: string) {
-  const diff = new Date(d).getTime() - AUJOURDHUI.getTime()
+  const diff = new Date(d).getTime() - debutDuJour().getTime()
   return Math.ceil(diff / (1000 * 60 * 60 * 24))
 }
 
@@ -127,9 +66,17 @@ interface FormSoin {
   cout: string
 }
 
-function ModalAjouterSoin({ onClose }: { onClose: () => void }) {
+function ModalAjouterSoin({
+  onClose,
+  onAdd,
+  animaux,
+}: {
+  onClose: () => void
+  onAdd: (soin: Soin) => void
+  animaux: Animal[]
+}) {
   const [form, setForm] = useState<FormSoin>({
-    date: '2026-07-14',
+    date: new Date().toISOString().slice(0, 10),
     animal: '',
     type: 'Vaccination',
     description: '',
@@ -143,7 +90,22 @@ function ModalAjouterSoin({ onClose }: { onClose: () => void }) {
 
   function submit(e: React.FormEvent) {
     e.preventDefault()
-    // En production : appel Supabase
+
+    const animalId = form.animal.trim()
+    const espece = animaux.find((a) => a.id === animalId)?.espece
+    const passe = form.date <= new Date().toISOString().slice(0, 10)
+
+    onAdd({
+      id: nextId('S'),
+      date: form.date,
+      animal: animalId || '—',
+      groupe: espece ? GROUPE_PAR_ESPECE[espece] : 'Non rattaché',
+      type: form.type,
+      description: form.description.trim() || form.type,
+      veterinaire: form.veterinaire.trim() || 'Non renseigné',
+      cout: Number(form.cout) || 0,
+      statut: passe ? 'Fait' : 'Planifié',
+    })
     onClose()
   }
 
@@ -268,7 +230,47 @@ function ModalAjouterSoin({ onClose }: { onClose: () => void }) {
 // ─── Page principale ──────────────────────────────────────────────────────────
 
 export default function SantePage() {
+  const userId = useUserId()
   const [modal, setModal] = useState(false)
+  const [soins, soinsApi] = useCollection<Soin>(userId, COLLECTIONS.soins, SOINS_SEED)
+  const [animaux] = useCollection<Animal>(userId, COLLECTIONS.animaux, ANIMAUX_SEED)
+
+  const cheptel = useMemo(() => animaux.filter((a) => !a.vendu), [animaux])
+
+  const animauxMalades = useMemo(
+    () => soins.filter((s) => s.statut === 'En cours' && s.type === 'Traitement'),
+    [soins]
+  )
+
+  const vaccinsAVenir = useMemo(() => {
+    const debut = debutDuJour()
+    const fin = new Date(debut)
+    fin.setDate(fin.getDate() + 7)
+    return soins
+      .filter((s) => {
+        if (s.statut === 'Fait') return false
+        const d = new Date(s.date)
+        return d >= debut && d <= fin
+      })
+      .sort((a, b) => a.date.localeCompare(b.date))
+  }, [soins])
+
+  const soinsCeMois = useMemo(() => {
+    const mois = new Date().toISOString().slice(0, 7)
+    return soins.filter((s) => s.date.startsWith(mois))
+  }, [soins])
+
+  const coutTotal = useMemo(
+    () => soinsCeMois.reduce((acc, s) => acc + s.cout, 0),
+    [soinsCeMois]
+  )
+
+  // Copie avant tri : `sort` mute le tableau, et celui-ci vient du cache du store.
+  const journal = useMemo(
+    () => [...soins].sort((a, b) => b.date.localeCompare(a.date)),
+    [soins]
+  )
+
 
   return (
     <>
@@ -294,7 +296,7 @@ export default function SantePage() {
             transition={{ type: 'spring' as const, delay: 0 }}
             className="bg-white/5 border border-white/10 rounded-xl p-3 text-center"
           >
-            <div className="text-xl font-bold text-[#D4AF37]">{SOINS_CE_MOIS.length}</div>
+            <div className="text-xl font-bold text-[#D4AF37]">{soinsCeMois.length}</div>
             <div className="text-white/50 text-[10px] mt-1">Soins ce mois</div>
           </motion.div>
           <motion.div
@@ -303,7 +305,7 @@ export default function SantePage() {
             className="bg-white/5 border border-white/10 rounded-xl p-3 text-center"
           >
             <div className="text-xl font-bold text-[#00BCD4]">
-              {COUT_TOTAL.toLocaleString('fr-FR')}
+              {coutTotal.toLocaleString('fr-FR')}
             </div>
             <div className="text-white/50 text-[10px] mt-1">FCFA dépensés</div>
           </motion.div>
@@ -312,13 +314,13 @@ export default function SantePage() {
             transition={{ type: 'spring' as const, delay: 0.16 }}
             className="bg-white/5 border border-white/10 rounded-xl p-3 text-center"
           >
-            <div className="text-xl font-bold text-green-400">{TAUX_MORTALITE}%</div>
-            <div className="text-white/50 text-[10px] mt-1">Taux mortalité</div>
+            <div className="text-xl font-bold text-green-400">{cheptel.length}</div>
+            <div className="text-white/50 text-[10px] mt-1">Têtes suivies</div>
           </motion.div>
         </div>
 
         {/* Alertes */}
-        {ANIMAUX_MALADES.length > 0 && (
+        {animauxMalades.length > 0 && (
           <motion.div
             initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}
             transition={{ type: 'spring' as const }}
@@ -327,16 +329,16 @@ export default function SantePage() {
             <span className="text-xl">🚨</span>
             <div>
               <span className="text-red-300 text-sm font-semibold">
-                {ANIMAUX_MALADES.length} animal{ANIMAUX_MALADES.length > 1 ? 'x' : ''} malade{ANIMAUX_MALADES.length > 1 ? 's' : ''}
+                {animauxMalades.length} animal{animauxMalades.length > 1 ? 'x' : ''} malade{animauxMalades.length > 1 ? 's' : ''}
               </span>
               <div className="text-red-400/60 text-xs mt-0.5">
-                {ANIMAUX_MALADES.map(a => a.animal).join(', ')}
+                {animauxMalades.map(a => a.animal).join(', ')}
               </div>
             </div>
           </motion.div>
         )}
 
-        {VACCINS_A_VENIR.length > 0 && (
+        {vaccinsAVenir.length > 0 && (
           <motion.div
             initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}
             transition={{ type: 'spring' as const, delay: 0.1 }}
@@ -345,23 +347,23 @@ export default function SantePage() {
             <span className="text-xl">⚠️</span>
             <div>
               <span className="text-orange-300 text-sm font-semibold">
-                {VACCINS_A_VENIR.length} vaccination{VACCINS_A_VENIR.length > 1 ? 's' : ''} dans les 7 prochains jours
+                {vaccinsAVenir.length} vaccination{vaccinsAVenir.length > 1 ? 's' : ''} dans les 7 prochains jours
               </span>
               <div className="text-orange-400/60 text-xs mt-0.5">
-                {VACCINS_A_VENIR.map(v => `${v.animal} — ${v.description}`).join(' · ')}
+                {vaccinsAVenir.map(v => `${v.animal} — ${v.description}`).join(' · ')}
               </div>
             </div>
           </motion.div>
         )}
 
         {/* Calendrier vaccinations 7 jours */}
-        {VACCINS_A_VENIR.length > 0 && (
+        {vaccinsAVenir.length > 0 && (
           <div className="mb-5">
             <h2 className="text-[#D4AF37] font-semibold text-xs mb-3 uppercase tracking-wide">
               📅 Prochaines 7 jours
             </h2>
             <div className="space-y-2">
-              {VACCINS_A_VENIR.map(v => {
+              {vaccinsAVenir.map(v => {
                 const jours = joursRestants(v.date)
                 return (
                   <div
@@ -392,7 +394,7 @@ export default function SantePage() {
           📋 Journal des soins
         </h2>
         <div className="space-y-3">
-          {MOCK_SOINS.sort((a, b) => b.date.localeCompare(a.date)).map((s, i) => (
+          {journal.map((s, i) => (
             <motion.div
               key={s.id}
               initial={{ opacity: 0, y: 10 }}
@@ -442,7 +444,13 @@ export default function SantePage() {
 
       {/* Modal */}
       <AnimatePresence>
-        {modal && <ModalAjouterSoin onClose={() => setModal(false)} />}
+        {modal && (
+          <ModalAjouterSoin
+            onClose={() => setModal(false)}
+            onAdd={(soin) => soinsApi.add(soin)}
+            animaux={cheptel}
+          />
+        )}
       </AnimatePresence>
     </>
   )

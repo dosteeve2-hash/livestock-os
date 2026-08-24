@@ -3,11 +3,13 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import LogoutButton from './LogoutButton'
+import { UserIdProvider } from './UserContext'
 
 const NAV = [
   { href: '/dashboard', label: 'Accueil', icon: '🏠' },
   { href: '/dashboard/animaux', label: 'Animaux', icon: '🐄' },
   { href: '/dashboard/sante', label: 'Santé', icon: '🩺' },
+  { href: '/dashboard/ventes', label: 'Ventes', icon: '💰' },
   { href: '/dashboard/mouvements', label: 'Mouvements', icon: '🚛' },
   { href: '/dashboard/marche', label: 'Marché', icon: '📊' },
   { href: '/dashboard/rapports', label: 'Rapports', icon: '📋' },
@@ -57,12 +59,12 @@ export default async function DashboardLayout({
 
       {/* Contenu */}
       <main className="flex-1 pb-24">
-        {children}
+        <UserIdProvider userId={user.id}>{children}</UserIdProvider>
       </main>
 
       {/* Bottom navigation */}
       <nav className="fixed bottom-0 left-0 right-0 z-40 bg-[#0A1628]/98 backdrop-blur border-t border-white/10">
-        <div className="grid grid-cols-7 px-1 py-2">
+        <div className="grid grid-cols-8 px-1 py-2">
           {NAV.map((item) => (
             <Link
               key={item.href}
