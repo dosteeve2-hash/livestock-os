@@ -35,11 +35,13 @@ LivestockOS est une PWA mobile-first qui permet aux éleveurs de :
 
 ## 🛠️ Stack
 
-- Next.js 15 (App Router) + TypeScript + Tailwind CSS
-- PWA (offline-first) — Workbox
-- Supabase (PostgreSQL + Realtime + Storage)
-- shadcn/ui + Framer Motion
+- Next.js 16 (App Router) + TypeScript strict + Tailwind CSS
+- Stockage local offline-first — le cheptel reste saisissable sans reseau
+- Neon Postgres + Better Auth — authentification uniquement
+- Framer Motion + Recharts
 - Vercel
+
+> Mise en route : voir [docs/SETUP-NEON.md](./docs/SETUP-NEON.md)
 
 ## 🌍 Écosystème FORGE Afrika
 
