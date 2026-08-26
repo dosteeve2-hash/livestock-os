@@ -1,35 +1,29 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
+import { useCollection } from '@/lib/store/useCollection'
+import { ANIMAUX_SEED, SOINS_SEED, VENTES_SEED } from '@/lib/store/seed'
+import { COLLECTIONS, type Animal, type Soin, type Vente } from '@/lib/store/types'
+import {
+  alertes as calculerAlertes,
+  chiffreAffairesDuMois,
+  cheptelVivant,
+  coutSoinsDuMois,
+  formatFcfaCourt,
+  joursRestants,
+  mouvementsRecents,
+  repartitionEspeces,
+  serieCheptel,
+  serieVentes,
+  soinsAVenir,
+  valeurTroupeau,
+} from '@/lib/store/derive'
+import { useUserId } from './UserContext'
 import {
   AreaChart, Area, BarChart, Bar,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
 } from 'recharts'
-
-const CHEPTEL_DATA = [
-  { mois: 'Mar', bovins: 38, ovins: 20, caprins: 12 },
-  { mois: 'Avr', bovins: 40, ovins: 22, caprins: 13 },
-  { mois: 'Mai', bovins: 42, ovins: 24, caprins: 14 },
-  { mois: 'Jun', bovins: 44, ovins: 23, caprins: 15 },
-  { mois: 'Jul', bovins: 43, ovins: 25, caprins: 15 },
-  { mois: 'Aoû', bovins: 45, ovins: 26, caprins: 16 },
-]
-
-const VENTES_DATA = [
-  { mois: 'Mar', montant: 320 },
-  { mois: 'Avr', montant: 480 },
-  { mois: 'Mai', montant: 290 },
-  { mois: 'Jun', montant: 610 },
-  { mois: 'Jul', montant: 570 },
-  { mois: 'Aoû', montant: 420 },
-]
-
-const VACCINS_A_VENIR = [
-  { animal: 'BV-004', vaccin: 'Fièvre aphteuse', date: '15 août', urgence: false },
-  { animal: 'OV-007', vaccin: 'Brucellose', date: '20 août', urgence: false },
-  { animal: 'BV-001', vaccin: 'Rappel charbon', date: '28 août', urgence: true },
-]
 
 const TOOLTIP_STYLE = {
   contentStyle: { backgroundColor: '#0c1a34', border: '1px solid rgba(212,175,55,0.3)', borderRadius: 8, color: 'white', fontSize: 11 },
@@ -38,14 +32,42 @@ const TOOLTIP_STYLE = {
 
 interface Props {
   prenom: string
-  stats: { label: string; value: string; icon: string; color: string; detail: string }[]
-  alertes: { icon: string; msg: string; urgence: string }[]
-  mouvements: { animal: string; type: string; montant: number; date: string }[]
 }
 
-export default function DashboardClient({ prenom, stats, alertes, mouvements }: Props) {
+export default function DashboardClient({ prenom }: Props) {
   const [mounted, setMounted] = useState(false)
   useEffect(() => setMounted(true), [])
+
+  const userId = useUserId()
+  const [animaux] = useCollection<Animal>(userId, COLLECTIONS.animaux, ANIMAUX_SEED)
+  const [soins] = useCollection<Soin>(userId, COLLECTIONS.soins, SOINS_SEED)
+  const [ventes] = useCollection<Vente>(userId, COLLECTIONS.ventes, VENTES_SEED)
+
+  const stats = useMemo(() => {
+    const vivants = cheptelVivant(animaux)
+    const parEspece = repartitionEspeces(animaux)
+    const prochains = soinsAVenir(soins, 30)
+    return [
+      { label: 'Animaux total', value: String(vivants.length), icon: '🐄', color: 'text-[#D4AF37]',
+        detail: `${parEspece.Bovin} bovins · ${parEspece.Ovin} ovins · ${parEspece.Caprin} caprins` },
+      { label: 'Valeur troupeau', value: formatFcfaCourt(valeurTroupeau(animaux)), icon: '💰', color: 'text-[#00BCD4]',
+        detail: 'FCFA estimé' },
+      { label: 'Soins à venir', value: String(prochains.length), icon: '🩺', color: 'text-orange-400',
+        detail: 'Dans les 30 prochains jours' },
+      { label: 'Ventes du mois', value: formatFcfaCourt(chiffreAffairesDuMois(ventes)), icon: '📊', color: 'text-green-400',
+        detail: 'FCFA encaissés' },
+      { label: 'Frais vétérinaires', value: formatFcfaCourt(coutSoinsDuMois(soins)), icon: '💊', color: 'text-purple-400',
+        detail: 'FCFA ce mois' },
+      { label: 'Volailles', value: String(parEspece.Volaille), icon: '🐔', color: 'text-emerald-400',
+        detail: 'Têtes suivies' },
+    ]
+  }, [animaux, soins, ventes])
+
+  const donneesCheptel = useMemo(() => serieCheptel(animaux, ventes), [animaux, ventes])
+  const donneesVentes = useMemo(() => serieVentes(ventes), [ventes])
+  const listeAlertes = useMemo(() => calculerAlertes(animaux, soins, ventes), [animaux, soins, ventes])
+  const prochainsSoins = useMemo(() => soinsAVenir(soins, 30).slice(0, 4), [soins])
+  const mouvements = useMemo(() => mouvementsRecents(soins, ventes), [soins, ventes])
 
   return (
     <div className="px-4 py-6 max-w-lg mx-auto">
@@ -76,7 +98,7 @@ export default function DashboardClient({ prenom, stats, alertes, mouvements }: 
         <div className="bg-white/5 border border-white/10 rounded-xl p-4 mb-4">
           <p className="text-[#D4AF37] text-xs font-semibold uppercase tracking-wide mb-3">Évolution cheptel</p>
           <ResponsiveContainer width="100%" height={140}>
-            <AreaChart data={CHEPTEL_DATA}>
+            <AreaChart data={donneesCheptel}>
               <defs>
                 <linearGradient id="bovins" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="5%" stopColor="#D4AF37" stopOpacity={0.3} />
@@ -104,7 +126,7 @@ export default function DashboardClient({ prenom, stats, alertes, mouvements }: 
         <div className="bg-white/5 border border-white/10 rounded-xl p-4 mb-6">
           <p className="text-[#D4AF37] text-xs font-semibold uppercase tracking-wide mb-3">Ventes (k FCFA)</p>
           <ResponsiveContainer width="100%" height={120}>
-            <BarChart data={VENTES_DATA}>
+            <BarChart data={donneesVentes}>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
               <XAxis dataKey="mois" tick={{ fill: '#8899bb', fontSize: 10 }} axisLine={false} tickLine={false} />
               <YAxis tick={{ fill: '#8899bb', fontSize: 10 }} axisLine={false} tickLine={false} tickFormatter={(v: any) => `${v}k`} />
@@ -119,7 +141,7 @@ export default function DashboardClient({ prenom, stats, alertes, mouvements }: 
       <div className="mb-6">
         <h2 className="text-[#D4AF37] font-semibold text-xs mb-3 uppercase tracking-wide">Alertes sanitaires</h2>
         <div className="space-y-2">
-          {alertes.map((a, i) => (
+          {listeAlertes.map((a, i) => (
             <div key={i} className={`flex items-start gap-3 rounded-xl px-4 py-3 border ${
               a.urgence === 'haute' ? 'bg-red-500/10 border-red-500/20'
               : a.urgence === 'info' ? 'bg-[#00BCD4]/10 border-[#00BCD4]/20'
@@ -129,6 +151,12 @@ export default function DashboardClient({ prenom, stats, alertes, mouvements }: 
               <span className="text-white/80 text-xs leading-relaxed">{a.msg}</span>
             </div>
           ))}
+          {listeAlertes.length === 0 && (
+            <div className="bg-green-500/10 border border-green-500/20 rounded-xl px-4 py-3 flex items-center gap-3">
+              <span className="text-base">✅</span>
+              <span className="text-white/80 text-xs">Rien à signaler — aucun soin urgent ni impayé.</span>
+            </div>
+          )}
         </div>
       </div>
 
@@ -136,18 +164,26 @@ export default function DashboardClient({ prenom, stats, alertes, mouvements }: 
       <div className="mb-6">
         <h2 className="text-[#D4AF37] font-semibold text-xs mb-3 uppercase tracking-wide">Vaccinations à venir</h2>
         <div className="space-y-2">
-          {VACCINS_A_VENIR.map((v, i) => (
-            <div key={i} className="flex items-center justify-between bg-white/5 border border-white/10 rounded-xl px-4 py-3">
-              <div>
-                <span className="text-white font-medium text-sm">{v.animal}</span>
-                <span className="text-white/50 text-xs ml-2">{v.vaccin}</span>
+          {prochainsSoins.map((v) => {
+            const j = joursRestants(v.date)
+            return (
+              <div key={v.id} className="flex items-center justify-between bg-white/5 border border-white/10 rounded-xl px-4 py-3">
+                <div className="min-w-0">
+                  <span className="text-white font-medium text-sm">{v.animal}</span>
+                  <span className="text-white/50 text-xs ml-2">{v.description}</span>
+                </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  {j <= 2 && <span className="w-2 h-2 rounded-full bg-orange-400 inline-block" />}
+                  <span className="text-white/50 text-xs">J-{j}</span>
+                </div>
               </div>
-              <div className="flex items-center gap-2">
-                {v.urgence && <span className="w-2 h-2 rounded-full bg-orange-400 inline-block" />}
-                <span className="text-white/50 text-xs">{v.date}</span>
-              </div>
+            )
+          })}
+          {prochainsSoins.length === 0 && (
+            <div className="text-white/40 text-xs px-4 py-3 bg-white/5 border border-white/10 rounded-xl">
+              Aucun soin planifié dans les 30 prochains jours.
             </div>
-          ))}
+          )}
         </div>
       </div>
 
@@ -180,10 +216,10 @@ export default function DashboardClient({ prenom, stats, alertes, mouvements }: 
         <h2 className="text-[#D4AF37] font-semibold text-xs mb-3 uppercase tracking-wide">Actions rapides</h2>
         <div className="grid grid-cols-2 gap-3">
           {[
-            { href: '/dashboard/animaux',   label: '+ Ajouter animal',      icon: '🐄' },
-            { href: '/dashboard/sante',     label: '+ Soin / vaccin',       icon: '🩺' },
-            { href: '/dashboard/mouvements',label: '+ Enregistrer vente',   icon: '💰' },
-            { href: '/dashboard/marche',    label: 'Prix du marché',         icon: '📊' },
+            { href: '/dashboard/animaux', label: '+ Ajouter animal', icon: '🐄' },
+            { href: '/dashboard/sante',   label: '+ Soin / vaccin',  icon: '🩺' },
+            { href: '/dashboard/ventes',  label: '+ Enregistrer vente', icon: '💰' },
+            { href: '/dashboard/marche',  label: 'Prix du marché', icon: '📊' },
           ].map((a) => (
             <Link key={a.href} href={a.href}
               className="flex items-center gap-3 bg-white/5 border border-white/10 rounded-xl px-4 py-3 hover:bg-white/10 hover:border-[#D4AF37]/30 transition-all">
@@ -192,6 +228,21 @@ export default function DashboardClient({ prenom, stats, alertes, mouvements }: 
             </Link>
           ))}
         </div>
+
+        {/* Le passeport est ce qui ouvre l'accès au crédit : il mérite sa propre place. */}
+        <Link
+          href="/dashboard/passeport"
+          className="mt-3 flex items-center gap-3 bg-[#D4AF37]/10 border border-[#D4AF37]/30 rounded-xl px-4 py-4 hover:bg-[#D4AF37]/15 transition-all"
+        >
+          <span className="text-2xl shrink-0">📄</span>
+          <span className="min-w-0">
+            <span className="block text-[#D4AF37] text-sm font-semibold">Passeport du cheptel</span>
+            <span className="block text-white/50 text-[11px] mt-0.5">
+              Dossier imprimable à présenter à une microfinance
+            </span>
+          </span>
+          <span className="text-[#D4AF37] ml-auto shrink-0">→</span>
+        </Link>
       </div>
     </div>
   )

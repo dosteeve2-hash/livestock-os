@@ -13,6 +13,7 @@ import {
   type TypeSoin,
 } from '@/lib/store/types'
 import { nextId } from '@/lib/store/store'
+import { animauxPluriel } from '@/lib/store/derive'
 import { useUserId } from '../UserContext'
 
 // ─── Utils ────────────────────────────────────────────────────────────────────
@@ -329,7 +330,7 @@ export default function SantePage() {
             <span className="text-xl">🚨</span>
             <div>
               <span className="text-red-300 text-sm font-semibold">
-                {animauxMalades.length} animal{animauxMalades.length > 1 ? 'x' : ''} malade{animauxMalades.length > 1 ? 's' : ''}
+                {animauxPluriel(animauxMalades.length)} malade{animauxMalades.length > 1 ? 's' : ''}
               </span>
               <div className="text-red-400/60 text-xs mt-0.5">
                 {animauxMalades.map(a => a.animal).join(', ')}
