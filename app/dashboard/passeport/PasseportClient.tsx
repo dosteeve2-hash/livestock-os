@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { useCollection } from '@/lib/store/useCollection'
 import { ANIMAUX_SEED, SOINS_SEED, VENTES_SEED } from '@/lib/store/seed'
 import { COLLECTIONS, type Animal, type Soin, type Vente } from '@/lib/store/types'
@@ -80,6 +80,52 @@ export default function PasseportClient({ nom, email, membreDepuis }: Props) {
     }
   }, [animaux, soins, ventes])
 
+  const [publication, setPublication] = useState<
+    { etat: 'repos' } | { etat: 'envoi' } | { etat: 'ok'; code: string } | { etat: 'erreur'; message: string }
+  >({ etat: 'repos' })
+
+  async function publier() {
+    setPublication({ etat: 'envoi' })
+    try {
+      const reponse = await fetch('/api/passeport/publier', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          nbTetes: bilan.vivants.length,
+          valeurTotale: bilan.valeur,
+          couvertureVaccinale: bilan.couverture,
+          revenus12m: bilan.encaisse,
+          nbVentes12m: bilan.ventesAn.length,
+          payload: {
+            parEspece: bilan.parEspece,
+            investiSante: bilan.investiSante,
+            moisActifs: bilan.moisActifs,
+            inventaire: bilan.vivants.map((a) => ({
+              id: a.id, espece: a.espece, race: a.race, age: a.age, valeur: a.valeur,
+            })),
+            ventes: [...bilan.ventesAn]
+              .sort((a, b) => b.date.localeCompare(a.date))
+              .map((v) => ({ date: v.date, acheteur: v.acheteur, prix: v.prix })),
+          },
+        }),
+      })
+
+      if (!reponse.ok) {
+        const corps = await reponse.json().catch(() => ({}))
+        setPublication({
+          etat: 'erreur',
+          message: corps.message ?? 'Publication impossible. Vérifiez votre connexion et réessayez.',
+        })
+        return
+      }
+
+      const { code } = await reponse.json()
+      setPublication({ etat: 'ok', code })
+    } catch {
+      setPublication({ etat: 'erreur', message: 'Publication impossible. Vérifiez votre connexion et réessayez.' })
+    }
+  }
+
   const editeLe = new Date().toISOString().slice(0, 10)
 
   return (
@@ -125,6 +171,56 @@ export default function PasseportClient({ nom, email, membreDepuis }: Props) {
           </p>
         </div>
 
+        {/* Publication vérifiable */}
+        <div className="no-print border border-[#D4AF37]/30 bg-[#D4AF37]/5 rounded-xl p-4 mb-6">
+          {publication.etat === 'ok' ? (
+            <>
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-lg">🔗</span>
+                <span className="text-[#D4AF37] text-sm font-semibold">Relevé publié</span>
+              </div>
+              <p className="text-white/60 text-xs mb-3 leading-relaxed">
+                Transmettez ce lien à votre prêteur. Il y verra les mêmes chiffres, la date de
+                publication certifiée par le serveur, et depuis combien de temps vous tenez ce suivi.
+              </p>
+              <div className="bg-[#0A1628] border border-white/10 rounded-lg px-3 py-2.5 mb-2">
+                <div className="text-white/40 text-[10px] mb-1">Code du relevé</div>
+                <div className="text-[#D4AF37] font-mono text-base tracking-wider">{publication.code}</div>
+              </div>
+              <a
+                href={`/verifier/${publication.code}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block text-center text-xs font-semibold text-[#0A1628] bg-[#D4AF37] rounded-lg py-2.5 hover:bg-[#D4AF37]/90 transition-colors"
+              >
+                Ouvrir la page de vérification
+              </a>
+            </>
+          ) : (
+            <>
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-lg">🔒</span>
+                <span className="text-[#D4AF37] text-sm font-semibold">Rendre ce relevé vérifiable</span>
+              </div>
+              <p className="text-white/60 text-xs mb-3 leading-relaxed">
+                Publier enregistre ces chiffres avec une date certifiée par le serveur, et vous donne
+                un lien que votre prêteur peut ouvrir lui-même. Publiez régulièrement : c&apos;est
+                l&apos;ancienneté du suivi qui donne du poids au dossier.
+              </p>
+              {publication.etat === 'erreur' && (
+                <p className="text-red-400 text-xs mb-2">{publication.message}</p>
+              )}
+              <button
+                onClick={publier}
+                disabled={publication.etat === 'envoi'}
+                className="w-full text-xs font-bold text-[#0A1628] bg-[#D4AF37] rounded-lg py-2.5 hover:bg-[#D4AF37]/90 transition-colors disabled:opacity-60"
+              >
+                {publication.etat === 'envoi' ? 'Publication…' : 'Publier et obtenir un lien'}
+              </button>
+            </>
+          )}
+        </div>
+
         {/* En-tête du document */}
         <div className="encadre border border-white/10 rounded-xl p-5 mb-4 saut">
           <div className="flex items-start justify-between mb-4">
@@ -163,7 +259,9 @@ export default function PasseportClient({ nom, email, membreDepuis }: Props) {
           <div className="flex items-baseline justify-between mb-4 pb-4 border-b border-white/10">
             <div>
               <div className="text-3xl font-bold text-[#D4AF37]">{bilan.vivants.length}</div>
-              <div className="text-white/40 text-[11px]">têtes vivantes</div>
+              <div className="text-white/40 text-[11px]">
+                {bilan.vivants.length > 1 ? 'têtes vivantes' : 'tête vivante'}
+              </div>
             </div>
             <div className="text-right">
               <div className="text-xl font-bold text-[#00BCD4]">{fcfa(bilan.valeur)}</div>
