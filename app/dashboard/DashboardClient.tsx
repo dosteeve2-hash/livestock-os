@@ -1,7 +1,20 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo } from 'react'
+import dynamic from 'next/dynamic'
 import Link from 'next/link'
+
+// Recharts mesure le DOM : pas de rendu serveur possible. `ssr: false` est le mecanisme
+// prevu pour cela — sans effet, sans setState, sans rendu en cascade — et il retire
+// Recharts du paquet initial, ce qui compte sur un Android d'entree de gamme en 2G.
+const GraphiquesAccueil = dynamic(() => import('./GraphiquesAccueil'), {
+  ssr: false,
+  loading: () => (
+    <div className="h-[140px] flex items-center justify-center text-white/20 text-xs">
+      Chargement des graphiques…
+    </div>
+  ),
+})
 import { useCollection } from '@/lib/store/useCollection'
 import { ANIMAUX_SEED, SOINS_SEED, VENTES_SEED } from '@/lib/store/seed'
 import { COLLECTIONS, type Animal, type Soin, type Vente } from '@/lib/store/types'
@@ -20,24 +33,12 @@ import {
   valeurTroupeau,
 } from '@/lib/store/derive'
 import { useUserId } from './UserContext'
-import {
-  AreaChart, Area, BarChart, Bar,
-  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-} from 'recharts'
-
-const TOOLTIP_STYLE = {
-  contentStyle: { backgroundColor: '#0c1a34', border: '1px solid rgba(212,175,55,0.3)', borderRadius: 8, color: 'white', fontSize: 11 },
-  labelStyle: { color: '#D4AF37' },
-}
 
 interface Props {
   prenom: string
 }
 
 export default function DashboardClient({ prenom }: Props) {
-  const [mounted, setMounted] = useState(false)
-  useEffect(() => setMounted(true), [])
-
   const userId = useUserId()
   const [animaux] = useCollection<Animal>(userId, COLLECTIONS.animaux, ANIMAUX_SEED)
   const [soins] = useCollection<Soin>(userId, COLLECTIONS.soins, SOINS_SEED)
@@ -93,49 +94,8 @@ export default function DashboardClient({ prenom }: Props) {
         ))}
       </div>
 
-      {/* Chart cheptel */}
-      {mounted && (
-        <div className="bg-white/5 border border-white/10 rounded-xl p-4 mb-4">
-          <p className="text-[#D4AF37] text-xs font-semibold uppercase tracking-wide mb-3">Évolution cheptel</p>
-          <ResponsiveContainer width="100%" height={140}>
-            <AreaChart data={donneesCheptel}>
-              <defs>
-                <linearGradient id="bovins" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#D4AF37" stopOpacity={0.3} />
-                  <stop offset="95%" stopColor="#D4AF37" stopOpacity={0} />
-                </linearGradient>
-                <linearGradient id="ovins" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#00BCD4" stopOpacity={0.25} />
-                  <stop offset="95%" stopColor="#00BCD4" stopOpacity={0} />
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
-              <XAxis dataKey="mois" tick={{ fill: '#8899bb', fontSize: 10 }} axisLine={false} tickLine={false} />
-              <YAxis tick={{ fill: '#8899bb', fontSize: 10 }} axisLine={false} tickLine={false} />
-              <Tooltip {...TOOLTIP_STYLE} />
-              <Area type="monotone" dataKey="bovins" stroke="#D4AF37" fill="url(#bovins)" strokeWidth={2} name="Bovins" />
-              <Area type="monotone" dataKey="ovins" stroke="#00BCD4" fill="url(#ovins)" strokeWidth={2} name="Ovins" />
-              <Area type="monotone" dataKey="caprins" stroke="#a78bfa" fill="none" strokeWidth={1.5} strokeDasharray="4 2" name="Caprins" />
-            </AreaChart>
-          </ResponsiveContainer>
-        </div>
-      )}
-
-      {/* Chart ventes */}
-      {mounted && (
-        <div className="bg-white/5 border border-white/10 rounded-xl p-4 mb-6">
-          <p className="text-[#D4AF37] text-xs font-semibold uppercase tracking-wide mb-3">Ventes (k FCFA)</p>
-          <ResponsiveContainer width="100%" height={120}>
-            <BarChart data={donneesVentes}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
-              <XAxis dataKey="mois" tick={{ fill: '#8899bb', fontSize: 10 }} axisLine={false} tickLine={false} />
-              <YAxis tick={{ fill: '#8899bb', fontSize: 10 }} axisLine={false} tickLine={false} tickFormatter={(v: any) => `${v}k`} />
-              <Tooltip {...TOOLTIP_STYLE} formatter={(v: any) => [`${v}k FCFA`, 'Ventes']} />
-              <Bar dataKey="montant" fill="#D4AF37" radius={[3, 3, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-      )}
+      {/* Graphiques — charges sans SSR : Recharts mesure le DOM. */}
+      <GraphiquesAccueil donneesCheptel={donneesCheptel} donneesVentes={donneesVentes} />
 
       {/* Alertes */}
       <div className="mb-6">
