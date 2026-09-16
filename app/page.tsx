@@ -9,22 +9,35 @@ export default function LandingPage() {
           <span className="text-2xl">🐄</span>
           <span className="text-lg font-bold text-[#D4AF37]">LivestockOS</span>
         </div>
-        <Link
-          href="/auth/login"
-          className="text-sm text-[#00BCD4] hover:text-[#D4AF37] transition-colors font-medium"
-        >
-          Connexion →
-        </Link>
+        <nav className="flex items-center gap-5">
+          <Link
+            href="/tarifs"
+            className="text-sm text-white/60 hover:text-[#D4AF37] transition-colors font-medium"
+          >
+            Tarifs
+          </Link>
+          <Link
+            href="/auth/login"
+            className="text-sm text-[#00BCD4] hover:text-[#D4AF37] transition-colors font-medium"
+          >
+            Connexion →
+          </Link>
+        </nav>
       </header>
 
       {/* Hero */}
       <section className="flex-1 px-6 py-16 flex flex-col items-center text-center max-w-md mx-auto">
         <div className="text-6xl mb-6">🐄</div>
         <h1 className="text-3xl font-bold text-[#D4AF37] mb-4 leading-tight">
-          Gérez votre élevage<br />depuis votre téléphone
+          Le dossier que la microfinance accepte
         </h1>
-        <p className="text-white/70 text-base mb-8 leading-relaxed">
-          Application mobile pour éleveurs sahéliens. Suivi du cheptel, vaccinations, ventes et prix du marché — même sans internet.
+        <p className="text-white/70 text-base mb-3 leading-relaxed">
+          Votre troupeau, prouvé, daté, vérifiable en un lien. Plus un animal perdu sans preuve,
+          plus un vaccin oublié.
+        </p>
+        <p className="text-white/40 text-sm mb-8 leading-relaxed">
+          Registre du cheptel, santé et ventes depuis votre téléphone — même sans réseau.
+          Gratuit jusqu&apos;à 20 têtes.
         </p>
 
         <div className="flex flex-col gap-3 w-full">
@@ -56,10 +69,10 @@ export default function LandingPage() {
         </h2>
         <div className="grid grid-cols-2 gap-3">
           {[
+            { icon: '📄', title: 'Passeport', desc: 'Vérifiable par le prêteur' },
             { icon: '🐄', title: 'Cheptel', desc: 'Registre complet' },
             { icon: '🩺', title: 'Santé', desc: 'Vaccins & soins' },
-            { icon: '🚛', title: 'Mouvements', desc: 'Ventes & achats' },
-            { icon: '📊', title: 'Marché', desc: 'Prix en temps réel' },
+            { icon: '💰', title: 'Ventes', desc: 'Chiffre d’affaires réel' },
           ].map((f) => (
             <div
               key={f.title}

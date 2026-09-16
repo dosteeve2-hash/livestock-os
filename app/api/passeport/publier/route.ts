@@ -1,7 +1,9 @@
 import { headers } from 'next/headers'
 import { NextResponse } from 'next/server'
 import { auth } from '@/lib/auth/server'
-import { publier, type Payload } from '@/lib/passeport/db'
+import { compterPublicationsDepuis, publier, type Payload } from '@/lib/passeport/db'
+import { abonnementDe } from '@/lib/plans/db'
+import { PLANS, tetesAutorisees } from '@/lib/plans/plans'
 
 /** Bornes de bon sens : un troupeau de 100 000 têtes n'existe pas chez un éleveur. */
 const MAX_TETES = 100_000
@@ -41,6 +43,34 @@ export async function POST(request: Request) {
     corps.payload === null
   ) {
     return NextResponse.json({ erreur: 'donnees_invalides' }, { status: 400 })
+  }
+
+  // Bornes du plan — vérifiées ici, pas dans le navigateur : c'est le seul
+  // endroit que l'éleveur ne peut pas contourner.
+  const abonnement = await abonnementDe(session.user.id, session.user.email)
+  const plan = PLANS[abonnement.effectif]
+
+  if (!tetesAutorisees(abonnement.effectif, nbTetes)) {
+    return NextResponse.json(
+      {
+        erreur: 'plan_insuffisant',
+        message: `Le plan ${plan.nom} couvre ${plan.maxTetes} têtes ; votre troupeau en compte ${nbTetes}. Passez au plan Troupeau pour publier.`,
+      },
+      { status: 402 }
+    )
+  }
+
+  if (
+    plan.passeportsParAn !== null &&
+    (await compterPublicationsDepuis(session.user.id, 365)) >= plan.passeportsParAn
+  ) {
+    return NextResponse.json(
+      {
+        erreur: 'plan_insuffisant',
+        message: `Le plan ${plan.nom} permet ${plan.passeportsParAn} publication par an. Passez au plan Troupeau pour publier sans limite.`,
+      },
+      { status: 402 }
+    )
   }
 
   // Le nom affiché vient de la session, pas du client : on ne publie pas

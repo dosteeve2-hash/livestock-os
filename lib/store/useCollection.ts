@@ -1,7 +1,11 @@
 'use client'
 
 import { useCallback, useMemo, useSyncExternalStore } from 'react'
+import { useCompte } from '@/lib/compte/CompteContext'
 import { read, subscribe, write } from './store'
+
+/** Référence stable : un `[]` recréé à chaque rendu ferait boucler useSyncExternalStore. */
+const VIDE: never[] = []
 
 interface Row {
   id: string
@@ -17,12 +21,18 @@ export interface CollectionApi<T extends Row> {
  * Collection réactive persistée en local.
  * Rend le tableau courant et les opérations d'écriture ; tout composant
  * abonné à la même collection se met à jour, y compris dans un autre onglet.
+ *
+ * `graine` n'est semée que pour le compte de démonstration : un vrai éleveur
+ * démarre avec un registre vide — un passeport publié avec des animaux
+ * fictifs vaudrait moins que rien devant une microfinance.
  */
 export function useCollection<T extends Row>(
   userId: string,
   collection: string,
-  seed: T[]
+  graine: T[]
 ): [T[], CollectionApi<T>] {
+  const { estDemo } = useCompte()
+  const seed: T[] = estDemo ? graine : VIDE
   const getSnapshot = useCallback(
     () => read<T>(userId, collection, seed),
     [userId, collection, seed]

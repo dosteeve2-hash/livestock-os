@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { useMemo, useState } from 'react'
 import { useCollection } from '@/lib/store/useCollection'
 import { ANIMAUX_SEED, SOINS_SEED, VENTES_SEED } from '@/lib/store/seed'
@@ -81,7 +82,10 @@ export default function PasseportClient({ nom, email, membreDepuis }: Props) {
   }, [animaux, soins, ventes])
 
   const [publication, setPublication] = useState<
-    { etat: 'repos' } | { etat: 'envoi' } | { etat: 'ok'; code: string } | { etat: 'erreur'; message: string }
+    | { etat: 'repos' }
+    | { etat: 'envoi' }
+    | { etat: 'ok'; code: string }
+    | { etat: 'erreur'; message: string; planInsuffisant?: boolean }
   >({ etat: 'repos' })
 
   async function publier() {
@@ -115,6 +119,7 @@ export default function PasseportClient({ nom, email, membreDepuis }: Props) {
         setPublication({
           etat: 'erreur',
           message: corps.message ?? 'Publication impossible. Vérifiez votre connexion et réessayez.',
+          planInsuffisant: reponse.status === 402,
         })
         return
       }
@@ -208,7 +213,17 @@ export default function PasseportClient({ nom, email, membreDepuis }: Props) {
                 l&apos;ancienneté du suivi qui donne du poids au dossier.
               </p>
               {publication.etat === 'erreur' && (
-                <p className="text-red-400 text-xs mb-2">{publication.message}</p>
+                <p className="text-red-400 text-xs mb-2">
+                  {publication.message}
+                  {publication.planInsuffisant && (
+                    <>
+                      {' '}
+                      <Link href="/tarifs" className="text-[#D4AF37] underline underline-offset-2">
+                        Voir les plans →
+                      </Link>
+                    </>
+                  )}
+                </p>
               )}
               <button
                 onClick={publier}

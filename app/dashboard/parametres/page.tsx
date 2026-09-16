@@ -1,7 +1,10 @@
 'use client'
 
+import Link from 'next/link'
 import { useState } from 'react'
 import { motion } from 'framer-motion'
+import { useCompte } from '@/lib/compte/CompteContext'
+import { PLANS, formatFcfa } from '@/lib/plans/plans'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -106,6 +109,8 @@ function Field({
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function ParametresPage() {
+  const { plan, planExpireLe } = useCompte()
+  const planDef = PLANS[plan]
   const [profil, setProfil] = useState<ProfilEleveur>(INIT_PROFIL)
   const [exploitation, setExploitation] = useState<Exploitation>(INIT_EXPLOITATION)
   const [alertes, setAlertes] = useState<Alertes>(INIT_ALERTES)
@@ -135,6 +140,36 @@ export default function ParametresPage() {
         <h1 className="text-xl font-bold text-[#D4AF37]">⚙️ Paramètres</h1>
         <p className="text-white/50 text-sm mt-1">Votre profil et votre exploitation</p>
       </div>
+
+      {/* Abonnement */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+        transition={{ type: 'spring' as const }}
+      >
+        <Section title="Abonnement" icon="🎟️">
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <div className="text-white font-semibold text-sm">
+                Plan {planDef.nom}
+                <span className="text-white/40 font-normal"> · {planDef.pourQui}</span>
+              </div>
+              <div className="text-white/50 text-xs mt-1">
+                {plan === 'eleveur'
+                  ? `${formatFcfa(0)} · ${planDef.passeportsParAn} passeport vérifiable par an`
+                  : planExpireLe
+                    ? `Actif jusqu'au ${new Date(planExpireLe).toLocaleDateString('fr-FR')}`
+                    : 'Actif, sans échéance'}
+              </div>
+            </div>
+            <Link
+              href="/tarifs"
+              className="shrink-0 text-xs font-bold px-3 py-2 rounded-lg bg-[#D4AF37] text-[#0A1628] hover:bg-[#D4AF37]/90 transition-colors"
+            >
+              {plan === 'eleveur' ? 'Passer au plan Troupeau' : 'Voir les plans'}
+            </Link>
+          </div>
+        </Section>
+      </motion.div>
 
       <form onSubmit={handleSave}>
 
