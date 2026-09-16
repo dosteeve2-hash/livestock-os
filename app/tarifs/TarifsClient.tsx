@@ -46,7 +46,7 @@ export default function TarifsClient({ planActuel, connecte, contactWhatsapp, co
       </div>
 
       {/* Cartes */}
-      <div className="grid gap-4 sm:grid-cols-3 max-w-4xl mx-auto w-full">
+      <div className="grid gap-4 md:grid-cols-3 max-w-4xl mx-auto w-full">
         {ORDRE_PLANS.map((id, i) => {
           const p = PLANS[id]
           const prix = annuel ? p.prixAnnuel : p.prixMensuel
@@ -57,7 +57,7 @@ export default function TarifsClient({ planActuel, connecte, contactWhatsapp, co
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.08 }}
-              className={`relative flex flex-col rounded-2xl p-6 border ${
+              className={`relative flex flex-col min-w-0 rounded-2xl p-6 border ${
                 p.misEnAvant
                   ? 'border-[#D4AF37] bg-[#D4AF37]/[0.06]'
                   : 'border-white/10 bg-white/5'
@@ -72,7 +72,7 @@ export default function TarifsClient({ planActuel, connecte, contactWhatsapp, co
               <p className="text-white/50 text-xs mt-1">{p.pourQui}</p>
 
               <div className="mt-5 mb-1">
-                <span className="text-3xl font-bold text-white">{formatFcfa(prix)}</span>
+                <span className="text-2xl md:text-3xl font-bold text-white">{formatFcfa(prix)}</span>
                 {prix > 0 && (
                   <span className="text-white/40 text-sm"> / {annuel ? 'an' : 'mois'}</span>
                 )}
