@@ -1,7 +1,33 @@
 'use client'
 
 import { useMemo, useState } from 'react'
-import { ValeurTroupeauChart, VentesAchatsChart, ValeurTroupeauBarChart } from './ChartSection'
+import dynamic from 'next/dynamic'
+
+// Recharts mesure le DOM : il ne peut pas rendre cote serveur, et le faire monter dans
+// un useEffect declenchait un rendu en cascade (react-hooks/set-state-in-effect).
+// `ssr: false` est le mecanisme prevu pour cela — et il sort Recharts du paquet initial,
+// ce qui compte sur un Android d'entree de gamme en 2G.
+const Attente = ({ h }: { h: number }) => (
+  <div
+    style={{ height: h }}
+    className="flex items-center justify-center text-white/20 text-xs"
+  >
+    Chargement du graphique…
+  </div>
+)
+
+const ValeurTroupeauChart = dynamic(
+  () => import('./ChartSection').then((m) => m.ValeurTroupeauChart),
+  { ssr: false, loading: () => <Attente h={200} /> }
+)
+const VentesAchatsChart = dynamic(
+  () => import('./ChartSection').then((m) => m.VentesAchatsChart),
+  { ssr: false, loading: () => <Attente h={200} /> }
+)
+const ValeurTroupeauBarChart = dynamic(
+  () => import('./ChartSection').then((m) => m.ValeurTroupeauBarChart),
+  { ssr: false, loading: () => <Attente h={200} /> }
+)
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 

@@ -9,7 +9,29 @@ import type { Animal, Espece, Soin, Vente } from './types'
  * chiffres différents pour la même chose, et l'éleveur ne sait plus lequel croire.
  */
 
-const ESPECES: Espece[] = ['Bovin', 'Ovin', 'Caprin', 'Volaille']
+/**
+ * L'ordre fait foi : c'est celui des courbes du graphique de cheptel.
+ *
+ * Exporte a dessein. Le graphique dessinait auparavant trois courbes ecrites a la main
+ * — bovins, ovins, caprins — alors que cette liste en compte QUATRE. Les volailles
+ * etaient calculees a chaque rendu et n'apparaissaient nulle part, y compris pour les
+ * trois volailles des donnees de demonstration. Rien ne pouvait le signaler : le point
+ * de serie etait un Record<string, string | number>, ou toute cle est permise.
+ * Desormais le graphique boucle sur cette constante, et le type ci-dessous rend la
+ * derive impossible : ajouter une espece au type Espece oblige a fournir sa cle.
+ */
+export const ESPECES: Espece[] = ['Bovin', 'Ovin', 'Caprin', 'Volaille']
+
+/** 'Bovin' → 'bovins'. Une seule definition de la cle, cote calcul comme cote graphique. */
+export function cleEspece(espece: Espece): CleEspece {
+  return `${espece.toLowerCase() as Lowercase<Espece>}s`
+}
+
+/** Les cles de serie, derivees du type : 'bovins' | 'ovins' | 'caprins' | 'volailles'. */
+export type CleEspece = `${Lowercase<Espece>}s`
+
+/** Un mois du graphique de cheptel : une valeur par espece, sans exception possible. */
+export type PointCheptel = { mois: string } & Record<CleEspece, number>
 
 export function debutDuJour() {
   const d = new Date()
@@ -103,7 +125,7 @@ export function animauxSousTraitement(soins: Soin[]) {
  * rajoute ceux vendus depuis. Une reconstitution, pas un relevé — mais fondée
  * sur les saisies réelles, contrairement à une courbe inventée.
  */
-export function serieCheptel(animaux: Animal[], ventes: Vente[]) {
+export function serieCheptel(animaux: Animal[], ventes: Vente[]): PointCheptel[] {
   return derniersMois().map((cle) => {
     const finDuMois = `${cle}-31`
 
@@ -115,11 +137,11 @@ export function serieCheptel(animaux: Animal[], ventes: Vente[]) {
       return !dejaVendu
     })
 
-    const point: Record<string, string | number> = { mois: moisCourt(cle) }
+    const comptes = {} as Record<CleEspece, number>
     for (const espece of ESPECES) {
-      point[espece.toLowerCase() + 's'] = presents.filter((a) => a.espece === espece).length
+      comptes[cleEspece(espece)] = presents.filter((a) => a.espece === espece).length
     }
-    return point
+    return { mois: moisCourt(cle), ...comptes }
   })
 }
 

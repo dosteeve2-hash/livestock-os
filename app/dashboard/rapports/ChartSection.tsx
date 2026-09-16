@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, type CSSProperties } from 'react'
+import { type CSSProperties } from 'react'
 import {
   LineChart,
   Line,
@@ -134,20 +134,10 @@ export function VentesAchatsChart() {
   )
 }
 
+// Plus de garde de montage ici : le module entier est desormais importe sans SSR
+// depuis rapports/page.tsx. Les deux autres graphiques de ce fichier n'en ont jamais
+// eu et s'affichaient tres bien — celui-ci etait le seul, par accident.
 export function ValeurTroupeauBarChart({ data }: { data: ValeurPoint[] }) {
-  const [mounted, setMounted] = useState(false)
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
-
-  if (!mounted) {
-    return (
-      <div className="h-[200px] flex items-center justify-center text-white/20 text-xs">
-        Chargement du graphique…
-      </div>
-    )
-  }
 
   return (
     <ResponsiveContainer width="100%" height={200}>
