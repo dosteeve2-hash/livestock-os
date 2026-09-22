@@ -43,6 +43,22 @@ LivestockOS est une PWA mobile-first qui permet aux éleveurs de :
 
 > Mise en route : voir [docs/SETUP-NEON.md](./docs/SETUP-NEON.md)
 
+### La base
+
+Le schéma complet est versionné dans [`db/schema.sql`](./db/schema.sql) — six tables :
+les quatre de Better Auth, `passeport_snapshot` (les relevés publiés, horodatés côté
+serveur) et `abonnement` (les plans payants).
+
+```bash
+npm run db:migrer     # applique le schéma — idempotent, ne détruit rien
+npm run db:verifier   # n'applique rien : dit seulement quelles tables manquent
+```
+
+Le fichier a été reconstruit le 22/09/2026 en lisant la base de production, puis
+vérifié : appliqué sur un Postgres vierge, il reproduit **50 colonnes, 13 contraintes
+et 14 index identiques** à ceux qui tournent. C'est ce qui rend les passeports publiés
+reconstructibles si la base disparaît — sans ce fichier, ils ne l'étaient pas.
+
 ## 🌍 Écosystème FORGE Afrika
 
 LivestockOS fait partie de [FORGE Afrika](https://github.com/dosteeve2-hash/forge-afrika).
