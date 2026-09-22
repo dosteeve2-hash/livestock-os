@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "eslint",
     "test": "vitest run",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "db:migrer": "node --env-file=.env.local db/migrer.mjs",
+    "db:verifier": "node --env-file=.env.local db/migrer.mjs --verifier"
   },
   "dependencies": {
     "better-auth": "^1.7.1",
