@@ -1,4 +1,4 @@
-# 🐄 LivestockOS
+# 🐄 ÉlevageTrack
 
 > Système de gestion d'élevage mobile pour éleveurs sahéliens.
 
@@ -11,7 +11,7 @@ Les éleveurs sahéliens (bovins, ovins, caprins) n'ont aucun outil de suivi. Pa
 
 ## 💡 Solution
 
-LivestockOS est une PWA mobile-first qui permet aux éleveurs de :
+ÉlevageTrack est une PWA mobile-first qui permet aux éleveurs de :
 - Enregistrer leur cheptel avec identifiants uniques
 - Suivre la santé animale et les vaccinations
 - Gérer les naissances, décès, ventes
@@ -45,7 +45,7 @@ LivestockOS est une PWA mobile-first qui permet aux éleveurs de :
 
 ## 🌍 Écosystème FORGE Afrika
 
-LivestockOS fait partie de [FORGE Afrika](https://github.com/dosteeve2-hash/forge-afrika).
+ÉlevageTrack fait partie de [FORGE Afrika](https://github.com/dosteeve2-hash/forge-afrika).
 
 **Produits liés :**
 - [ValueChain Connect](https://github.com/dosteeve2-hash/valuechain-connect) — Accès aux marchés B2B

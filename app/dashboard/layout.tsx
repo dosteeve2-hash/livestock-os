@@ -47,7 +47,7 @@ export default async function DashboardLayout({
       <header className="sticky top-0 z-40 bg-[#0A1628]/95 backdrop-blur border-b border-white/10 px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <span className="text-xl">🐄</span>
-          <span className="font-bold text-[#D4AF37] text-base">LivestockOS</span>
+          <span className="font-bold text-[#D4AF37] text-base">ÉlevageTrack</span>
         </div>
         <div className="flex items-center gap-3">
           <span className="text-white/50 text-xs hidden sm:block">

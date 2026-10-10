@@ -1,8 +1,8 @@
-# PRD — LivestockOS
+# PRD — ÉlevageTrack
 
 ## Vision
 
-LivestockOS est la première application de gestion d'élevage conçue spécifiquement pour les éleveurs sahéliens. Mobile-first, offline-capable, interface ultra-simple — elle fonctionne là où la connectivité est faible et l'alphabétisation numérique limitée. L'objectif : donner aux éleveurs les données pour négocier, accéder aux financements et vendre au bon prix.
+ÉlevageTrack est la première application de gestion d'élevage conçue spécifiquement pour les éleveurs sahéliens. Mobile-first, offline-capable, interface ultra-simple — elle fonctionne là où la connectivité est faible et l'alphabétisation numérique limitée. L'objectif : donner aux éleveurs les données pour négocier, accéder aux financements et vendre au bon prix.
 
 ## Utilisateurs cibles
 

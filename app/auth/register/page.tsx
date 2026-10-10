@@ -12,7 +12,7 @@ export default function RegisterPage() {
       {/* Logo */}
       <div className="mb-8 text-center">
         <div className="text-5xl mb-3">🐄</div>
-        <h1 className="text-2xl font-bold text-[#D4AF37]">LivestockOS</h1>
+        <h1 className="text-2xl font-bold text-[#D4AF37]">ÉlevageTrack</h1>
         <p className="text-white/50 text-sm mt-1">Créer votre compte éleveur</p>
       </div>
 

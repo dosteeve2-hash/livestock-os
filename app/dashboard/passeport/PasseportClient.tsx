@@ -394,7 +394,7 @@ export default function PasseportClient({ nom, email, membreDepuis }: Props) {
         {/* Mentions */}
         <div className="encadre border border-white/10 rounded-xl p-4 saut">
           <p className="text-white/40 text-[10px] leading-relaxed">
-            Document généré par LivestockOS le {dateLongue(editeLe)} à partir des saisies de
+            Document généré par ÉlevageTrack le {dateLongue(editeLe)} à partir des saisies de
             l&apos;éleveur. Les valeurs sont déclaratives et estimées par l&apos;exploitant : elles
             n&apos;engagent ni un vétérinaire ni un expert assermenté. Une visite de contrôle reste
             recommandée avant tout engagement financier.

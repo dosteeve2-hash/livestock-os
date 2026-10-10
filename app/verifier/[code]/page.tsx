@@ -4,7 +4,7 @@ import { historiqueDuCode, parCode } from '@/lib/passeport/db'
 export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
-  title: 'Vérification de passeport — LivestockOS',
+  title: 'Vérification de passeport — ÉlevageTrack',
   // Un lien de vérification circule entre l'éleveur et son prêteur, pas sur le web.
   robots: { index: false, follow: false },
 }
@@ -70,7 +70,7 @@ export default async function VerifierPage({
         {/* Bandeau d'authenticité */}
         <div className="flex items-center gap-2 mb-6">
           <span className="text-xl">🐄</span>
-          <span className="font-bold text-[#D4AF37]">LivestockOS</span>
+          <span className="font-bold text-[#D4AF37]">ÉlevageTrack</span>
           <span className="text-white/30 text-xs ml-auto font-mono">{snapshot.code}</span>
         </div>
 

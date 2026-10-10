@@ -29,7 +29,7 @@ const ETAPES: Etape[] = [
     numero: 2,
     titre: 'Suivre la santé',
     description:
-      'Enregistrez les vaccinations et traitements. LivestockOS vous rappellera les dates de rappel pour ne jamais manquer un soin.',
+      'Enregistrez les vaccinations et traitements. ÉlevageTrack vous rappellera les dates de rappel pour ne jamais manquer un soin.',
     icon: '🩺',
     action: 'Voir la santé',
     href: '/dashboard/sante',
@@ -47,7 +47,7 @@ const ETAPES: Etape[] = [
     numero: 4,
     titre: 'Consulter les prix',
     description:
-      'Accédez aux prix du marché par espèce et catégorie. LivestockOS vous indique quand c\'est le bon moment pour vendre.',
+      'Accédez aux prix du marché par espèce et catégorie. ÉlevageTrack vous indique quand c\'est le bon moment pour vendre.',
     icon: '📊',
     action: 'Voir les prix',
     href: '/dashboard/marche',
@@ -90,7 +90,7 @@ export default function OnboardingPage() {
             <div>
               <div className="text-[#00BCD4] font-semibold text-sm">Mode démo actif</div>
               <div className="text-white/50 text-xs">
-                Vous explorez LivestockOS avec des données fictives
+                Vous explorez ÉlevageTrack avec des données fictives
               </div>
             </div>
           </div>
@@ -101,7 +101,7 @@ export default function OnboardingPage() {
       <div className="w-full max-w-sm mb-8 text-center">
         <div className="text-4xl mb-3">🐄</div>
         <h1 className="text-xl font-bold text-[#D4AF37]">
-          Bienvenue sur LivestockOS
+          Bienvenue sur ÉlevageTrack
         </h1>
         <p className="text-white/50 text-sm mt-1">
           4 étapes pour démarrer

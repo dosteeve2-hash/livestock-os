@@ -1,6 +1,6 @@
 # Configuration Neon — 10 minutes
 
-LivestockOS utilise **Neon Postgres** pour l'authentification et **Better Auth** comme bibliothèque.
+ÉlevageTrack utilise **Neon Postgres** pour l'authentification et **Better Auth** comme bibliothèque.
 Les données métier (cheptel, soins, ventes) restent en local sur l'appareil — la base ne porte que les comptes.
 
 ---

@@ -289,7 +289,7 @@ export default function ParametresPage() {
       </form>
 
       {/* Version app */}
-      <p className="text-center text-white/20 text-xs mt-6">LivestockOS v0.1 · Sahel Agri-Tech</p>
+      <p className="text-center text-white/20 text-xs mt-6">ÉlevageTrack v0.1 · Sahel Agri-Tech</p>
     </div>
   )
 }

@@ -3,7 +3,7 @@ import type { Metadata, Viewport } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'LivestockOS — Gestion d\'élevage sahélien',
+  title: 'ÉlevageTrack — Gestion d\'élevage sahélien',
   description: 'Application mobile de gestion d\'élevage pour éleveurs sahéliens. Suivi du cheptel, santé animale, mouvements et prix du marché.',
   manifest: '/manifest.json',
   icons: {
