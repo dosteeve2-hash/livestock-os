@@ -64,10 +64,15 @@ export interface Historique {
 const MAX_PAR_JOUR = 5
 
 export async function compterPublicationsDuJour(userId: string) {
+  return compterPublicationsDepuis(userId, 1)
+}
+
+/** Publications sur les `jours` derniers jours — sert au quota annuel du plan gratuit. */
+export async function compterPublicationsDepuis(userId: string, jours: number) {
   const { rows } = await db().query<{ n: string }>(
     `SELECT count(*) AS n FROM passeport_snapshot
-     WHERE user_id = $1 AND publie_le > now() - interval '24 hours'`,
-    [userId]
+     WHERE user_id = $1 AND publie_le > now() - ($2::int || ' days')::interval`,
+    [userId, jours]
   )
   return Number(rows[0]?.n ?? 0)
 }

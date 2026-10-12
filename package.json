@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "test": "vitest run",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "plan:activer": "node scripts/activer-plan.mjs"
   },
   "dependencies": {
     "better-auth": "^1.7.1",

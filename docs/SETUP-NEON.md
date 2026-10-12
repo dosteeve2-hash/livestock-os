@@ -59,6 +59,23 @@ Pour seulement inspecter le SQL sans l'appliquer :
 npx @better-auth/cli generate
 ```
 
+Puis les tables métier (passeports, abonnements), à coller dans le **SQL Editor** de Neon :
+
+```bash
+scripts/migrations/001_abonnement.sql
+```
+
+### Activer un plan payant (manuel, pour les premiers clients)
+
+L'éleveur paie par Orange Money et vous écrit ; vous activez :
+
+```bash
+npm run plan:activer -- eleveur@mail.com troupeau 12 "OM 4521-7788"
+```
+
+`12` = nombre de mois (0 = sans échéance). Le retour au gratuit : `npm run plan:activer -- eleveur@mail.com eleveur`.
+Sans ligne dans `abonnement`, un compte est en plan Éleveur (gratuit, 20 têtes, 1 passeport/an).
+
 ---
 
 ## 4. Lancer et vérifier

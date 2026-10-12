@@ -4,7 +4,9 @@ import { redirect } from 'next/navigation'
 import { auth } from '@/lib/auth/server'
 import Link from 'next/link'
 import LogoutButton from './LogoutButton'
-import { UserIdProvider } from './UserContext'
+import { CompteProvider } from '@/lib/compte/CompteContext'
+import { abonnementDe } from '@/lib/plans/db'
+import { PLANS } from '@/lib/plans/plans'
 
 const NAV = [
   { href: '/dashboard', label: 'Accueil', icon: '🏠' },
@@ -31,6 +33,8 @@ export default async function DashboardLayout({
 
   const user = session.user
   const isDemo = user.email === 'demo@livestockos.app'
+  const abonnement = await abonnementDe(user.id, user.email)
+  const plan = PLANS[abonnement.effectif]
 
   return (
     <div className="min-h-screen bg-[#0A1628] flex flex-col">
@@ -50,6 +54,17 @@ export default async function DashboardLayout({
           <span className="font-bold text-[#D4AF37] text-base">LivestockOS</span>
         </div>
         <div className="flex items-center gap-3">
+          <Link
+            href="/tarifs"
+            title={abonnement.effectif === 'eleveur' ? 'Voir les plans' : 'Mon abonnement'}
+            className={`text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-md border transition-colors ${
+              abonnement.effectif === 'eleveur'
+                ? 'border-white/15 text-white/50 hover:text-[#D4AF37] hover:border-[#D4AF37]/40'
+                : 'border-[#D4AF37]/40 text-[#D4AF37] bg-[#D4AF37]/10'
+            }`}
+          >
+            {plan.nom}
+          </Link>
           <span className="text-white/50 text-xs hidden sm:block">
             {user.email}
           </span>
@@ -59,7 +74,16 @@ export default async function DashboardLayout({
 
       {/* Contenu */}
       <main className="flex-1 pb-24">
-        <UserIdProvider userId={user.id}>{children}</UserIdProvider>
+        <CompteProvider
+          compte={{
+            userId: user.id,
+            estDemo: isDemo,
+            plan: abonnement.effectif,
+            planExpireLe: abonnement.expireLe,
+          }}
+        >
+          {children}
+        </CompteProvider>
       </main>
 
       {/* Bottom navigation */}

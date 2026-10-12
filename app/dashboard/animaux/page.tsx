@@ -1,7 +1,10 @@
 'use client'
 
+import Link from 'next/link'
 import { useMemo, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useCompte } from '@/lib/compte/CompteContext'
+import { PLANS } from '@/lib/plans/plans'
 import { useCollection } from '@/lib/store/useCollection'
 import { ANIMAUX_SEED } from '@/lib/store/seed'
 import { COLLECTIONS, type Animal, type Espece, type EtatSante, type Sexe } from '@/lib/store/types'
@@ -138,6 +141,52 @@ const FORM_INIT: FormAnimal = {
   etatSante: 'Sain',
   dateVaccination: '2026-07-18',
   valeur: '',
+}
+
+function ModalLimitePlan({ nbTetes, onClose }: { nbTetes: number; onClose: () => void }) {
+  const { plan } = useCompte()
+  const actuel = PLANS[plan]
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm px-4"
+      onClick={onClose}
+    >
+      <motion.div
+        initial={{ y: 80, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        exit={{ y: 80, opacity: 0 }}
+        transition={{ type: 'spring' as const, damping: 20 }}
+        className="w-full max-w-md bg-[#0D1E36] border border-[#D4AF37]/30 rounded-2xl p-6 shadow-2xl"
+        onClick={e => e.stopPropagation()}
+      >
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-[#D4AF37] font-bold text-lg">Votre troupeau grandit</h2>
+          <button onClick={onClose} className="text-white/40 hover:text-white text-xl leading-none">×</button>
+        </div>
+        <p className="text-white/70 text-sm leading-relaxed mb-2">
+          Le plan <span className="text-white font-semibold">{actuel.nom}</span> couvre{' '}
+          {actuel.maxTetes} têtes. Vous en avez déjà {nbTetes}.
+        </p>
+        <p className="text-white/50 text-xs leading-relaxed mb-5">
+          Le plan Troupeau suit jusqu&apos;à 200 têtes et publie des passeports sans limite, pour
+          3 000 FCFA par mois — le prix d&apos;une dose de vaccin. Vos animaux actuels restent
+          enregistrés quoi qu&apos;il arrive.
+        </p>
+        <Link
+          href="/tarifs"
+          className="block w-full text-center py-3 bg-[#D4AF37] text-[#0A1628] rounded-xl font-bold text-sm hover:bg-[#D4AF37]/90 transition-colors"
+        >
+          Voir le plan Troupeau
+        </Link>
+        <button onClick={onClose} className="w-full mt-2 py-2 text-white/40 text-xs hover:text-white/70">
+          Plus tard
+        </button>
+      </motion.div>
+    </motion.div>
+  )
 }
 
 function ModalAjouterAnimal({
@@ -345,6 +394,15 @@ export default function AnimauxPage() {
   const [recherche, setRecherche] = useState('')
   const [ficheAnimal, setFicheAnimal] = useState<Animal | null>(null)
   const [modalAjout, setModalAjout] = useState(false)
+  const [modalLimite, setModalLimite] = useState(false)
+  const { plan } = useCompte()
+
+  // La limite se vérifie sur le cheptel vivant : vendre un animal libère une place.
+  function ouvrirAjout() {
+    const max = PLANS[plan].maxTetes
+    if (max !== null && animaux.length >= max) setModalLimite(true)
+    else setModalAjout(true)
+  }
 
   const compteParEspece = useMemo(() => {
     const compte: Record<Espece, number> = { Bovin: 0, Ovin: 0, Caprin: 0, Volaille: 0 }
@@ -371,7 +429,7 @@ export default function AnimauxPage() {
             <p className="text-white/50 text-sm mt-1">Registre complet de votre cheptel</p>
           </div>
           <button
-            onClick={() => setModalAjout(true)}
+            onClick={ouvrirAjout}
             className="bg-[#D4AF37] text-[#0A1628] text-xs font-bold px-4 py-2.5 rounded-xl hover:bg-[#D4AF37]/90 transition-colors shrink-0"
           >
             + Ajouter
@@ -481,7 +539,7 @@ export default function AnimauxPage() {
 
         {/* Bouton ajouter bas */}
         <button
-          onClick={() => setModalAjout(true)}
+          onClick={ouvrirAjout}
           className="w-full py-4 border-2 border-dashed border-[#D4AF37]/30 text-[#D4AF37] rounded-xl text-sm font-medium hover:border-[#D4AF37]/60 hover:bg-[#D4AF37]/5 transition-all"
         >
           + Ajouter un animal
@@ -492,6 +550,9 @@ export default function AnimauxPage() {
       <AnimatePresence>
         {ficheAnimal && (
           <ModalFicheAnimal animal={ficheAnimal} onClose={() => setFicheAnimal(null)} />
+        )}
+        {modalLimite && (
+          <ModalLimitePlan nbTetes={animaux.length} onClose={() => setModalLimite(false)} />
         )}
         {modalAjout && (
           <ModalAjouterAnimal
