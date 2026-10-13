@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation'
 import { auth } from '@/lib/auth/server'
 import Link from 'next/link'
 import LogoutButton from './LogoutButton'
+import ExampleDataBanner from './ExampleDataBanner'
 import { CompteProvider } from '@/lib/compte/CompteContext'
 import { abonnementDe } from '@/lib/plans/db'
 import { PLANS } from '@/lib/plans/plans'
@@ -82,6 +83,7 @@ export default async function DashboardLayout({
             planExpireLe: abonnement.expireLe,
           }}
         >
+          <ExampleDataBanner />
           {children}
         </CompteProvider>
       </main>
