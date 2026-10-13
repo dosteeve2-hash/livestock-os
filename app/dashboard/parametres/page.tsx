@@ -31,16 +31,16 @@ interface Alertes {
 // ─── Valeurs initiales ────────────────────────────────────────────────────────
 
 const INIT_PROFIL: ProfilEleveur = {
-  nom: 'Ibrahim Sawadogo',
-  email: 'ibrahim.sawadogo@mail.com',
-  telephone: '+226 70 12 34 56',
+  nom: '',
+  email: '',
+  telephone: '',
 }
 
 const INIT_EXPLOITATION: Exploitation = {
-  nom: 'Ferme Sawadogo',
-  localisation: 'Ouahigouya, Nord Burkina',
+  nom: '',
+  localisation: '',
   typeElevage: 'Mixte',
-  superficie: '15',
+  superficie: '',
 }
 
 const INIT_ALERTES: Alertes = {
