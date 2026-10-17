@@ -8,7 +8,7 @@ export default function LandingPage() {
       <header className="px-6 py-5 flex items-center justify-between border-b border-white/10">
         <div className="flex items-center gap-2">
           <span className="text-2xl">🐄</span>
-          <span className="text-lg font-bold text-[#D4AF37]">LivestockOS</span>
+          <span className="text-lg font-bold text-[#D4AF37]">ÉlevageTrack</span>
         </div>
         <nav className="flex items-center gap-5">
           <Link
@@ -110,7 +110,7 @@ export default function LandingPage() {
       {/* Footer */}
       <footer className="px-6 py-4 border-t border-white/10 text-center">
         <p className="text-white/40 text-xs">
-          © 2026 LivestockOS · FORGE Afrika · Burkina Faso
+          © 2026 ÉlevageTrack · FORGE Afrika · Burkina Faso
         </p>
       </footer>
     </main>

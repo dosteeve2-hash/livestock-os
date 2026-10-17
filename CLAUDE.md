@@ -1,4 +1,4 @@
-# LivestockOS — Instructions Claude
+# ÉlevageTrack — Instructions Claude
 
 ## Stack
 - Next.js 16 App Router + TypeScript strict (0 `any`)
