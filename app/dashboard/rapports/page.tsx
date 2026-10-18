@@ -10,7 +10,7 @@ import dynamic from 'next/dynamic'
 const Attente = ({ h }: { h: number }) => (
   <div
     style={{ height: h }}
-    className="flex items-center justify-center text-white/20 text-xs"
+    className="flex items-center justify-center text-white/60 text-xs"
   >
     Chargement du graphique…
   </div>
@@ -159,7 +159,7 @@ export default function RapportsPage() {
         <select
           value={moisIndex}
           onChange={e => setMoisIndex(Number(e.target.value))}
-          className="flex-1 bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm focus:outline-none focus:border-[#D4AF37]/50"
+          className="flex-1 bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm focus:outline-none focus:border-[#D4AF37]"
         >
           {MOIS_NOMS.map((m, i) => (
             <option key={m} value={i} className="bg-[#0A1628]">{m}</option>
@@ -168,7 +168,7 @@ export default function RapportsPage() {
         <select
           value={annee}
           onChange={e => setAnnee(Number(e.target.value))}
-          className="w-28 bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm focus:outline-none focus:border-[#D4AF37]/50"
+          className="w-28 bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm focus:outline-none focus:border-[#D4AF37]"
         >
           {ANNEES.map(a => (
             <option key={a} value={a} className="bg-[#0A1628]">{a}</option>
@@ -188,7 +188,7 @@ export default function RapportsPage() {
         <div className="bg-white/5 border border-white/10 rounded-xl p-4">
           <div className="text-[#00BCD4] text-xl font-bold">{donnees.animauxFin}</div>
           <div className="text-white/50 text-xs mt-1">Animaux en stock</div>
-          <div className="text-white/30 text-xs mt-1">
+          <div className="text-white/60 text-xs mt-1">
             {donnees.animauxDebut}→{donnees.animauxFin} sur le mois
           </div>
         </div>
@@ -219,10 +219,10 @@ export default function RapportsPage() {
           <table className="w-full text-xs">
             <thead>
               <tr className="border-b border-white/10">
-                <th className="px-3 py-2 text-left text-white/40 font-medium">Mois</th>
-                <th className="px-3 py-2 text-right text-white/40 font-medium">Animaux</th>
-                <th className="px-3 py-2 text-right text-white/40 font-medium">Valeur</th>
-                <th className="px-3 py-2 text-right text-white/40 font-medium">Variation</th>
+                <th className="px-3 py-2 text-left text-white/60 font-medium">Mois</th>
+                <th className="px-3 py-2 text-right text-white/60 font-medium">Animaux</th>
+                <th className="px-3 py-2 text-right text-white/60 font-medium">Valeur</th>
+                <th className="px-3 py-2 text-right text-white/60 font-medium">Variation</th>
               </tr>
             </thead>
             <tbody>
@@ -258,9 +258,9 @@ export default function RapportsPage() {
           <table className="w-full text-xs">
             <thead>
               <tr className="border-b border-white/10">
-                <th className="px-3 py-2 text-left text-white/40 font-medium">Espèce</th>
-                <th className="px-3 py-2 text-right text-white/40 font-medium">Effectif</th>
-                <th className="px-3 py-2 text-right text-white/40 font-medium">Valeur</th>
+                <th className="px-3 py-2 text-left text-white/60 font-medium">Espèce</th>
+                <th className="px-3 py-2 text-right text-white/60 font-medium">Effectif</th>
+                <th className="px-3 py-2 text-right text-white/60 font-medium">Valeur</th>
               </tr>
             </thead>
             <tbody>
@@ -307,7 +307,7 @@ export default function RapportsPage() {
                   <span className="text-lg shrink-0">{ESPECE_ICONS[inc.espece]}</span>
                   <div className="min-w-0">
                     <div className="text-white text-xs font-semibold">{inc.animal} — {inc.description}</div>
-                    <div className="text-white/40 text-[10px] mt-0.5">{formatDate(inc.date)}</div>
+                    <div className="text-white/60 text-[10px] mt-0.5">{formatDate(inc.date)}</div>
                   </div>
                 </div>
                 <span className={`text-[10px] border px-2 py-0.5 rounded-full shrink-0 ${GRAVITE_STYLES[inc.gravite]}`}>
@@ -325,7 +325,7 @@ export default function RapportsPage() {
 
       {/* Note */}
       <div className="bg-white/5 border border-white/10 rounded-xl px-4 py-3">
-        <p className="text-white/40 text-xs text-center">
+        <p className="text-white/60 text-xs text-center">
           ℹ️ Données issues de votre registre · Valeurs estimées sur prix marché
         </p>
       </div>

@@ -10,7 +10,7 @@ import Link from 'next/link'
 const GraphiquesAccueil = dynamic(() => import('./GraphiquesAccueil'), {
   ssr: false,
   loading: () => (
-    <div className="h-[140px] flex items-center justify-center text-white/20 text-xs">
+    <div className="h-[140px] flex items-center justify-center text-white/60 text-xs">
       Chargement des graphiques…
     </div>
   ),
@@ -89,7 +89,7 @@ export default function DashboardClient({ prenom }: Props) {
               <span className={`text-xl font-bold ${s.color}`}>{s.value}</span>
             </div>
             <div className="text-white/70 text-xs font-medium">{s.label}</div>
-            <div className="text-white/40 text-[11px] mt-0.5">{s.detail}</div>
+            <div className="text-white/60 text-[11px] mt-0.5">{s.detail}</div>
           </div>
         ))}
       </div>
@@ -140,7 +140,7 @@ export default function DashboardClient({ prenom }: Props) {
             )
           })}
           {prochainsSoins.length === 0 && (
-            <div className="text-white/40 text-xs px-4 py-3 bg-white/5 border border-white/10 rounded-xl">
+            <div className="text-white/60 text-xs px-4 py-3 bg-white/5 border border-white/10 rounded-xl">
               Aucun soin planifié dans les 30 prochains jours.
             </div>
           )}
@@ -164,7 +164,7 @@ export default function DashboardClient({ prenom }: Props) {
                 {m.montant > 0 && (
                   <div className="text-[#D4AF37] text-sm font-semibold">{m.montant.toLocaleString('fr-FR')} F</div>
                 )}
-                <div className="text-white/40 text-xs">{m.date}</div>
+                <div className="text-white/60 text-xs">{m.date}</div>
               </div>
             </div>
           ))}

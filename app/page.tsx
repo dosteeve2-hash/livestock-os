@@ -36,7 +36,7 @@ export default function LandingPage() {
           Votre troupeau, prouvé, daté, vérifiable en un lien. Plus un animal perdu sans preuve,
           plus un vaccin oublié.
         </p>
-        <p className="text-white/40 text-sm mb-8 leading-relaxed">
+        <p className="text-white/60 text-sm mb-8 leading-relaxed">
           Registre du cheptel, santé et ventes depuis votre téléphone — même sans réseau.
           Gratuit jusqu&apos;à 20 têtes.
         </p>
@@ -109,7 +109,7 @@ export default function LandingPage() {
 
       {/* Footer */}
       <footer className="px-6 py-4 border-t border-white/10 text-center">
-        <p className="text-white/40 text-xs">
+        <p className="text-white/60 text-xs">
           © 2026 LivestockOS · FORGE Afrika · Burkina Faso
         </p>
       </footer>

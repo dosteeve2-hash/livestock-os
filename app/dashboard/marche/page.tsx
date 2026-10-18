@@ -184,7 +184,7 @@ export default function MarchePage() {
                 <div className="flex items-start justify-between mb-3">
                   <div>
                     <div className="text-white font-semibold text-sm">{p.categorie}</div>
-                    <div className="text-white/40 text-xs mt-0.5">📍 {p.marche}</div>
+                    <div className="text-white/60 text-xs mt-0.5">📍 {p.marche}</div>
                   </div>
                   <div className="flex items-center gap-2">
                     <TendanceIcon tendance={p.tendance} />
@@ -195,7 +195,7 @@ export default function MarchePage() {
                 {/* Prix */}
                 <div className="grid grid-cols-3 gap-2">
                   <div className="text-center">
-                    <div className="text-white/40 text-[10px] mb-0.5">Min</div>
+                    <div className="text-white/60 text-[10px] mb-0.5">Min</div>
                     <div className="text-white/70 text-xs font-medium">
                       {(p.prixMin / 1000).toFixed(0)}K
                     </div>
@@ -205,10 +205,10 @@ export default function MarchePage() {
                     <div className="text-[#D4AF37] text-sm font-bold">
                       {(p.prixMoyen / 1000).toFixed(0)}K
                     </div>
-                    <div className="text-white/30 text-[9px]">FCFA</div>
+                    <div className="text-white/60 text-[9px]">FCFA</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-white/40 text-[10px] mb-0.5">Max</div>
+                    <div className="text-white/60 text-[10px] mb-0.5">Max</div>
                     <div className="text-white/70 text-xs font-medium">
                       {(p.prixMax / 1000).toFixed(0)}K
                     </div>
@@ -222,7 +222,7 @@ export default function MarchePage() {
 
       {/* Note */}
       <div className="mt-4 bg-white/5 border border-white/10 rounded-xl px-4 py-3">
-        <p className="text-white/40 text-xs text-center">
+        <p className="text-white/60 text-xs text-center">
           ℹ️ Prix indicatifs basés sur les marchés locaux · Actualisés chaque semaine
         </p>
       </div>

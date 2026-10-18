@@ -31,7 +31,7 @@ export default function RegisterPage() {
               type="text"
               autoComplete="name"
               placeholder="Votre nom"
-              className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-[#D4AF37] transition-colors text-sm"
+              className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/50 focus:outline-none focus:border-[#D4AF37] transition-colors text-sm"
             />
           </div>
 
@@ -46,7 +46,7 @@ export default function RegisterPage() {
               required
               autoComplete="email"
               placeholder="votre@email.com"
-              className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-[#D4AF37] transition-colors text-sm"
+              className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/50 focus:outline-none focus:border-[#D4AF37] transition-colors text-sm"
             />
           </div>
 
@@ -61,7 +61,7 @@ export default function RegisterPage() {
               required
               autoComplete="new-password"
               placeholder="8 caractères minimum"
-              className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-[#D4AF37] transition-colors text-sm"
+              className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/50 focus:outline-none focus:border-[#D4AF37] transition-colors text-sm"
             />
           </div>
 
@@ -91,7 +91,7 @@ export default function RegisterPage() {
       </div>
 
       <div className="mt-6 text-center">
-        <Link href="/" className="text-white/40 text-xs hover:text-white/60 transition-colors">
+        <Link href="/" className="text-white/60 text-xs hover:text-white/60 transition-colors">
           ← Retour à l&apos;accueil
         </Link>
       </div>

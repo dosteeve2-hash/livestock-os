@@ -174,10 +174,10 @@ export default function MouvementsPage() {
                   <span className="text-xl">{style.icon}</span>
                   <div>
                     <span className="text-white font-semibold text-sm">{m.animal}</span>
-                    <span className="text-white/40 text-xs ml-1">({m.espece})</span>
+                    <span className="text-white/60 text-xs ml-1">({m.espece})</span>
                   </div>
                 </div>
-                <span className="text-white/40 text-xs">{formatDate(m.date)}</span>
+                <span className="text-white/60 text-xs">{formatDate(m.date)}</span>
               </div>
 
               <div className="ml-8 space-y-1">
@@ -190,7 +190,7 @@ export default function MouvementsPage() {
                   <div className="text-white/50 text-xs">👤 {m.vendeur}</div>
                 )}
                 <div className="flex items-center justify-between mt-2">
-                  <span className="text-white/40 text-xs">🚗 {m.transport}</span>
+                  <span className="text-white/60 text-xs">🚗 {m.transport}</span>
                   {m.prix > 0 && (
                     <span className={`font-bold text-sm ${style.color}`}>
                       {m.prix.toLocaleString('fr-FR')} FCFA

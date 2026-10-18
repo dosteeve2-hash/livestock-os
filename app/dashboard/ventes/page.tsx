@@ -122,7 +122,7 @@ function ModalVendre({
           <button
             onClick={onClose}
             aria-label="Fermer"
-            className="text-white/40 hover:text-white text-xl leading-none"
+            className="text-white/60 hover:text-white text-xl leading-none"
           >
             ×
           </button>
@@ -134,7 +134,7 @@ function ModalVendre({
             <p className="text-white/60 text-sm">
               Aucun animal disponible à la vente.
             </p>
-            <p className="text-white/30 text-xs mt-1">
+            <p className="text-white/60 text-xs mt-1">
               Ajoutez d&apos;abord un animal au cheptel.
             </p>
           </div>
@@ -148,7 +148,7 @@ function ModalVendre({
                 id="vente-animal"
                 value={form.animalId}
                 onChange={(e) => choisirAnimal(e.target.value)}
-                className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm focus:outline-none focus:border-[#D4AF37]/50"
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm focus:outline-none focus:border-[#D4AF37]"
               >
                 {cheptel.map((a) => (
                   <option key={a.id} value={a.id} className="bg-[#0D1E36]">
@@ -177,7 +177,7 @@ function ModalVendre({
                 placeholder="ex: Boucherie Rood Woko"
                 value={form.acheteur}
                 onChange={(e) => setForm((f) => ({ ...f, acheteur: e.target.value }))}
-                className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm placeholder-white/20 focus:outline-none focus:border-[#D4AF37]/50"
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm placeholder-white/50 focus:outline-none focus:border-[#D4AF37]"
               />
             </div>
 
@@ -191,7 +191,7 @@ function ModalVendre({
                   type="date"
                   value={form.date}
                   onChange={(e) => setForm((f) => ({ ...f, date: e.target.value }))}
-                  className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm focus:outline-none focus:border-[#D4AF37]/50"
+                  className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm focus:outline-none focus:border-[#D4AF37]"
                 />
               </div>
               <div>
@@ -204,7 +204,7 @@ function ModalVendre({
                   min="0"
                   value={form.prix}
                   onChange={(e) => setForm((f) => ({ ...f, prix: e.target.value }))}
-                  className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm focus:outline-none focus:border-[#D4AF37]/50"
+                  className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm focus:outline-none focus:border-[#D4AF37]"
                 />
               </div>
             </div>
@@ -419,7 +419,7 @@ export default function VentesPage() {
                   <span className="text-xl shrink-0">{ICONS[v.espece]}</span>
                   <div className="min-w-0">
                     <span className="text-white font-semibold text-sm">{v.animalId}</span>
-                    <span className="text-white/40 text-xs ml-1">({v.espece})</span>
+                    <span className="text-white/60 text-xs ml-1">({v.espece})</span>
                   </div>
                 </div>
                 <span
@@ -431,7 +431,7 @@ export default function VentesPage() {
               <div className="ml-8 space-y-1.5">
                 <div className="text-white/80 text-xs font-medium truncate">🤝 {v.acheteur}</div>
                 <div className="flex items-center justify-between">
-                  <span className="text-white/40 text-xs">📅 {formatDate(v.date)}</span>
+                  <span className="text-white/60 text-xs">📅 {formatDate(v.date)}</span>
                   <span className="text-[#D4AF37] text-sm font-bold">
                     {v.prix.toLocaleString('fr-FR')} F
                   </span>
@@ -444,7 +444,7 @@ export default function VentesPage() {
             <div className="text-center py-10 border-2 border-dashed border-white/10 rounded-xl">
               <div className="text-3xl mb-2">💰</div>
               <p className="text-white/50 text-sm">Aucune vente enregistrée.</p>
-              <p className="text-white/30 text-xs mt-1">
+              <p className="text-white/60 text-xs mt-1">
                 Votre première vente apparaîtra ici.
               </p>
             </div>
