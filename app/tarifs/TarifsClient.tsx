@@ -74,10 +74,10 @@ export default function TarifsClient({ planActuel, connecte, contactWhatsapp, co
               <div className="mt-5 mb-1">
                 <span className="text-2xl md:text-3xl font-bold text-white">{formatFcfa(prix)}</span>
                 {prix > 0 && (
-                  <span className="text-white/40 text-sm"> / {annuel ? 'an' : 'mois'}</span>
+                  <span className="text-white/60 text-sm"> / {annuel ? 'an' : 'mois'}</span>
                 )}
               </div>
-              <p className="text-white/40 text-xs h-4">
+              <p className="text-white/60 text-xs h-4">
                 {prix > 0 && annuel && `soit ${formatFcfa(Math.round(prix / 12))} par mois`}
                 {prix === 0 && 'pour toujours'}
               </p>

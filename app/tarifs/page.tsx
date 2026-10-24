@@ -108,7 +108,7 @@ export default async function TarifsPage() {
             </li>
           ))}
         </ol>
-        <p className="text-white/35 text-xs text-center mt-4">
+        <p className="text-white/60 text-xs text-center mt-4">
           Contact :{' '}
           {contactWhatsapp ? (
             <a href={`https://wa.me/${contactWhatsapp}`} className="text-[#00BCD4] hover:underline">
@@ -129,7 +129,7 @@ export default async function TarifsPage() {
             <details key={f.q} className="group bg-white/5 border border-white/10 rounded-xl p-4">
               <summary className="cursor-pointer text-white text-sm font-medium list-none flex justify-between items-center">
                 {f.q}
-                <span className="text-white/30 group-open:rotate-45 transition-transform">+</span>
+                <span className="text-white/60 group-open:rotate-45 transition-transform">+</span>
               </summary>
               <p className="text-white/55 text-xs mt-3 leading-relaxed">{f.r}</p>
             </details>
@@ -138,7 +138,7 @@ export default async function TarifsPage() {
       </section>
 
       <footer className="px-6 py-4 border-t border-white/10 text-center">
-        <p className="text-white/40 text-xs">© 2026 LivestockOS · FORGE Afrika · Burkina Faso</p>
+        <p className="text-white/60 text-xs">© 2026 LivestockOS · FORGE Afrika · Burkina Faso</p>
       </footer>
     </main>
   )

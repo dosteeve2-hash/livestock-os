@@ -179,7 +179,7 @@ export default function OnboardingPage() {
         <div className="mt-4 text-center">
           <Link
             href="/dashboard"
-            className="text-white/30 text-xs hover:text-white/50 transition-colors"
+            className="text-white/60 text-xs hover:text-white/50 transition-colors"
           >
             Passer l&apos;introduction
           </Link>

@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import type { Metadata, Viewport } from 'next'
+import MouvementReduit from '@/components/MouvementReduit'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -27,7 +28,7 @@ export default function RootLayout({
   return (
     <html lang="fr">
       <body className="min-h-screen bg-[#0A1628] text-white antialiased">
-        {children}
+        <MouvementReduit>{children}</MouvementReduit>
       </body>
     </html>
   )

@@ -189,7 +189,7 @@ export default function PasseportClient({ nom, email, membreDepuis }: Props) {
                 publication certifiée par le serveur, et depuis combien de temps vous tenez ce suivi.
               </p>
               <div className="bg-[#0A1628] border border-white/10 rounded-lg px-3 py-2.5 mb-2">
-                <div className="text-white/40 text-[10px] mb-1">Code du relevé</div>
+                <div className="text-white/60 text-[10px] mb-1">Code du relevé</div>
                 <div className="text-[#D4AF37] font-mono text-base tracking-wider">{publication.code}</div>
               </div>
               <a
@@ -243,7 +243,7 @@ export default function PasseportClient({ nom, email, membreDepuis }: Props) {
               <div className="titre text-[#D4AF37] font-bold text-lg leading-tight">
                 Passeport du cheptel
               </div>
-              <div className="text-white/40 text-[11px] mt-0.5">
+              <div className="text-white/60 text-[11px] mt-0.5">
                 Édité le {dateLongue(editeLe)}
               </div>
             </div>
@@ -252,15 +252,15 @@ export default function PasseportClient({ nom, email, membreDepuis }: Props) {
 
           <dl className="space-y-2 text-xs">
             <div className="flex justify-between gap-4">
-              <dt className="text-white/40">Éleveur</dt>
+              <dt className="text-white/60">Éleveur</dt>
               <dd className="text-white font-medium text-right">{nom}</dd>
             </div>
             <div className="flex justify-between gap-4">
-              <dt className="text-white/40">Contact</dt>
+              <dt className="text-white/60">Contact</dt>
               <dd className="text-white/80 text-right break-all">{email}</dd>
             </div>
             <div className="flex justify-between gap-4">
-              <dt className="text-white/40">Suivi depuis</dt>
+              <dt className="text-white/60">Suivi depuis</dt>
               <dd className="text-white/80 text-right">{dateLongue(membreDepuis)}</dd>
             </div>
           </dl>
@@ -274,13 +274,13 @@ export default function PasseportClient({ nom, email, membreDepuis }: Props) {
           <div className="flex items-baseline justify-between mb-4 pb-4 border-b border-white/10">
             <div>
               <div className="text-3xl font-bold text-[#D4AF37]">{bilan.vivants.length}</div>
-              <div className="text-white/40 text-[11px]">
+              <div className="text-white/60 text-[11px]">
                 {bilan.vivants.length > 1 ? 'têtes vivantes' : 'tête vivante'}
               </div>
             </div>
             <div className="text-right">
               <div className="text-xl font-bold text-[#00BCD4]">{fcfa(bilan.valeur)}</div>
-              <div className="text-white/40 text-[11px]">FCFA — valeur estimée</div>
+              <div className="text-white/60 text-[11px]">FCFA — valeur estimée</div>
             </div>
           </div>
 
@@ -289,7 +289,7 @@ export default function PasseportClient({ nom, email, membreDepuis }: Props) {
               <div key={esp}>
                 <div className="text-base">{ICONS[esp]}</div>
                 <div className="text-white font-semibold text-sm">{bilan.parEspece[esp]}</div>
-                <div className="text-white/40 text-[10px]">{esp}</div>
+                <div className="text-white/60 text-[10px]">{esp}</div>
               </div>
             ))}
           </div>
@@ -303,15 +303,15 @@ export default function PasseportClient({ nom, email, membreDepuis }: Props) {
           <div className="grid grid-cols-3 gap-3 text-center mb-4">
             <div>
               <div className="text-xl font-bold text-white">{bilan.soinsAn.length}</div>
-              <div className="text-white/40 text-[10px] mt-0.5">soins réalisés</div>
+              <div className="text-white/60 text-[10px] mt-0.5">soins réalisés</div>
             </div>
             <div>
               <div className="text-xl font-bold text-green-400">{bilan.couverture}%</div>
-              <div className="text-white/40 text-[10px] mt-0.5">couverture vaccinale</div>
+              <div className="text-white/60 text-[10px] mt-0.5">couverture vaccinale</div>
             </div>
             <div>
               <div className="text-xl font-bold text-white">{fcfa(bilan.investiSante)}</div>
-              <div className="text-white/40 text-[10px] mt-0.5">FCFA investis</div>
+              <div className="text-white/60 text-[10px] mt-0.5">FCFA investis</div>
             </div>
           </div>
           <p className="text-white/50 text-[11px] leading-relaxed">
@@ -329,15 +329,15 @@ export default function PasseportClient({ nom, email, membreDepuis }: Props) {
           <div className="grid grid-cols-3 gap-3 text-center mb-4">
             <div>
               <div className="text-xl font-bold text-[#D4AF37]">{fcfa(bilan.encaisse)}</div>
-              <div className="text-white/40 text-[10px] mt-0.5">FCFA encaissés</div>
+              <div className="text-white/60 text-[10px] mt-0.5">FCFA encaissés</div>
             </div>
             <div>
               <div className="text-xl font-bold text-white">{bilan.ventesAn.length}</div>
-              <div className="text-white/40 text-[10px] mt-0.5">ventes</div>
+              <div className="text-white/60 text-[10px] mt-0.5">ventes</div>
             </div>
             <div>
               <div className="text-xl font-bold text-white">{bilan.moisActifs}/12</div>
-              <div className="text-white/40 text-[10px] mt-0.5">mois avec vente</div>
+              <div className="text-white/60 text-[10px] mt-0.5">mois avec vente</div>
             </div>
           </div>
 
@@ -345,9 +345,9 @@ export default function PasseportClient({ nom, email, membreDepuis }: Props) {
             <table className="w-full text-[11px]">
               <thead>
                 <tr className="border-b border-white/10">
-                  <th className="text-left py-1.5 text-white/40 font-medium">Date</th>
-                  <th className="text-left py-1.5 text-white/40 font-medium">Acheteur</th>
-                  <th className="text-right py-1.5 text-white/40 font-medium">Montant</th>
+                  <th className="text-left py-1.5 text-white/60 font-medium">Date</th>
+                  <th className="text-left py-1.5 text-white/60 font-medium">Acheteur</th>
+                  <th className="text-right py-1.5 text-white/60 font-medium">Montant</th>
                 </tr>
               </thead>
               <tbody>
@@ -378,10 +378,10 @@ export default function PasseportClient({ nom, email, membreDepuis }: Props) {
           <table className="w-full text-[11px]">
             <thead>
               <tr className="border-b border-white/10">
-                <th className="text-left py-1.5 text-white/40 font-medium">Identifiant</th>
-                <th className="text-left py-1.5 text-white/40 font-medium">Race</th>
-                <th className="text-left py-1.5 text-white/40 font-medium">Âge</th>
-                <th className="text-right py-1.5 text-white/40 font-medium">Valeur</th>
+                <th className="text-left py-1.5 text-white/60 font-medium">Identifiant</th>
+                <th className="text-left py-1.5 text-white/60 font-medium">Race</th>
+                <th className="text-left py-1.5 text-white/60 font-medium">Âge</th>
+                <th className="text-right py-1.5 text-white/60 font-medium">Valeur</th>
               </tr>
             </thead>
             <tbody>
@@ -400,7 +400,7 @@ export default function PasseportClient({ nom, email, membreDepuis }: Props) {
           </table>
 
           {bilan.vivants.length === 0 && (
-            <p className="text-white/40 text-xs text-center py-4">
+            <p className="text-white/60 text-xs text-center py-4">
               Aucun animal enregistré.
             </p>
           )}
@@ -408,7 +408,7 @@ export default function PasseportClient({ nom, email, membreDepuis }: Props) {
 
         {/* Mentions */}
         <div className="encadre border border-white/10 rounded-xl p-4 saut">
-          <p className="text-white/40 text-[10px] leading-relaxed">
+          <p className="text-white/60 text-[10px] leading-relaxed">
             Document généré par LivestockOS le {dateLongue(editeLe)} à partir des saisies de
             l&apos;éleveur. Les valeurs sont déclaratives et estimées par l&apos;exploitant : elles
             n&apos;engagent ni un vétérinaire ni un expert assermenté. Une visite de contrôle reste

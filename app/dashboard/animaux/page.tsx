@@ -64,39 +64,39 @@ function ModalFicheAnimal({ animal, onClose }: { animal: Animal; onClose: () => 
             <span className="text-3xl">{ICONS[animal.espece]}</span>
             <div>
               <h2 className="text-white font-bold text-lg leading-none">{animal.id}</h2>
-              <span className="text-white/40 text-xs">{animal.espece} · {animal.sexe}</span>
+              <span className="text-white/60 text-xs">{animal.espece} · {animal.sexe}</span>
             </div>
           </div>
-          <button onClick={onClose} className="text-white/40 hover:text-white text-xl leading-none">×</button>
+          <button onClick={onClose} aria-label="Fermer" className="flex h-11 w-11 items-center justify-center text-white/60 hover:text-white text-xl leading-none">×</button>
         </div>
 
         <div className="space-y-3">
           <div className="grid grid-cols-2 gap-3">
             <div className="bg-white/5 border border-white/10 rounded-xl p-3">
-              <div className="text-white/40 text-[10px] mb-1">Espèce</div>
+              <div className="text-white/60 text-[10px] mb-1">Espèce</div>
               <div className="text-white text-sm font-medium">{animal.espece}</div>
             </div>
             <div className="bg-white/5 border border-white/10 rounded-xl p-3">
-              <div className="text-white/40 text-[10px] mb-1">Race</div>
+              <div className="text-white/60 text-[10px] mb-1">Race</div>
               <div className="text-white text-sm font-medium">{animal.race}</div>
             </div>
             <div className="bg-white/5 border border-white/10 rounded-xl p-3">
-              <div className="text-white/40 text-[10px] mb-1">Âge</div>
+              <div className="text-white/60 text-[10px] mb-1">Âge</div>
               <div className="text-white text-sm font-medium">{animal.age}</div>
             </div>
             <div className="bg-white/5 border border-white/10 rounded-xl p-3">
-              <div className="text-white/40 text-[10px] mb-1">Poids</div>
+              <div className="text-white/60 text-[10px] mb-1">Poids</div>
               <div className="text-white text-sm font-medium">{animal.poids}</div>
             </div>
           </div>
 
           <div className="bg-white/5 border border-white/10 rounded-xl p-3 flex items-center justify-between">
-            <div className="text-white/40 text-[10px]">État de santé</div>
+            <div className="text-white/60 text-[10px]">État de santé</div>
             <EtatBadge etat={animal.etatSante} />
           </div>
 
           <div className="bg-white/5 border border-white/10 rounded-xl p-3 flex items-center justify-between">
-            <div className="text-white/40 text-[10px]">Prochaine vaccination</div>
+            <div className="text-white/60 text-[10px]">Prochaine vaccination</div>
             <div className="text-[#00BCD4] text-sm font-medium">💉 {formatDate(animal.dateVaccination)}</div>
           </div>
 
@@ -164,7 +164,7 @@ function ModalLimitePlan({ nbTetes, onClose }: { nbTetes: number; onClose: () =>
       >
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-[#D4AF37] font-bold text-lg">Votre troupeau grandit</h2>
-          <button onClick={onClose} className="text-white/40 hover:text-white text-xl leading-none">×</button>
+          <button onClick={onClose} aria-label="Fermer" className="flex h-11 w-11 items-center justify-center text-white/60 hover:text-white text-xl leading-none">×</button>
         </div>
         <p className="text-white/70 text-sm leading-relaxed mb-2">
           Le plan <span className="text-white font-semibold">{actuel.nom}</span> couvre{' '}
@@ -181,7 +181,7 @@ function ModalLimitePlan({ nbTetes, onClose }: { nbTetes: number; onClose: () =>
         >
           Voir le plan Troupeau
         </Link>
-        <button onClick={onClose} className="w-full mt-2 py-2 text-white/40 text-xs hover:text-white/70">
+        <button onClick={onClose} className="w-full mt-2 py-2 text-white/60 text-xs hover:text-white/70">
           Plus tard
         </button>
       </motion.div>
@@ -238,7 +238,7 @@ function ModalAjouterAnimal({
       >
         <div className="flex items-center justify-between mb-5">
           <h2 className="text-[#D4AF37] font-bold text-lg">+ Ajouter un animal</h2>
-          <button onClick={onClose} className="text-white/40 hover:text-white text-xl leading-none">×</button>
+          <button onClick={onClose} aria-label="Fermer" className="flex h-11 w-11 items-center justify-center text-white/60 hover:text-white text-xl leading-none">×</button>
         </div>
 
         <form onSubmit={submit} className="space-y-4">
@@ -249,7 +249,7 @@ function ModalAjouterAnimal({
               placeholder="ex: BV-004 (auto si vide)"
               value={form.id}
               onChange={e => handle('id', e.target.value)}
-              className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm placeholder-white/20 focus:outline-none focus:border-[#D4AF37]/50"
+              className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm placeholder-white/50 focus:outline-none focus:border-[#D4AF37]"
             />
           </div>
 
@@ -281,7 +281,7 @@ function ModalAjouterAnimal({
               placeholder="ex: Zébu Peul"
               value={form.race}
               onChange={e => handle('race', e.target.value)}
-              className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm placeholder-white/20 focus:outline-none focus:border-[#D4AF37]/50"
+              className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm placeholder-white/50 focus:outline-none focus:border-[#D4AF37]"
             />
           </div>
 
@@ -313,7 +313,7 @@ function ModalAjouterAnimal({
                 placeholder="ex: 2 ans"
                 value={form.age}
                 onChange={e => handle('age', e.target.value)}
-                className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm placeholder-white/20 focus:outline-none focus:border-[#D4AF37]/50"
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm placeholder-white/50 focus:outline-none focus:border-[#D4AF37]"
               />
             </div>
             <div>
@@ -323,7 +323,7 @@ function ModalAjouterAnimal({
                 placeholder="ex: 45 kg"
                 value={form.poids}
                 onChange={e => handle('poids', e.target.value)}
-                className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm placeholder-white/20 focus:outline-none focus:border-[#D4AF37]/50"
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm placeholder-white/50 focus:outline-none focus:border-[#D4AF37]"
               />
             </div>
           </div>
@@ -354,7 +354,7 @@ function ModalAjouterAnimal({
               type="date"
               value={form.dateVaccination}
               onChange={e => handle('dateVaccination', e.target.value)}
-              className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm focus:outline-none focus:border-[#D4AF37]/50"
+              className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm focus:outline-none focus:border-[#D4AF37]"
             />
           </div>
 
@@ -366,7 +366,7 @@ function ModalAjouterAnimal({
               value={form.valeur}
               onChange={e => handle('valeur', e.target.value)}
               min="0"
-              className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm placeholder-white/20 focus:outline-none focus:border-[#D4AF37]/50"
+              className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm placeholder-white/50 focus:outline-none focus:border-[#D4AF37]"
             />
           </div>
 
@@ -457,7 +457,7 @@ export default function AnimauxPage() {
             >
               <div className="text-lg leading-none mb-1">{ICONS[esp]}</div>
               <div className="text-white font-bold text-sm">{compteParEspece[esp]}</div>
-              <div className="text-white/40 text-[9px] mt-0.5">{esp}s</div>
+              <div className="text-white/60 text-[9px] mt-0.5">{esp}s</div>
             </motion.div>
           ))}
         </div>
@@ -469,7 +469,7 @@ export default function AnimauxPage() {
             placeholder="🔎 Rechercher par ID ou race…"
             value={recherche}
             onChange={e => setRecherche(e.target.value)}
-            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white text-sm placeholder-white/30 focus:outline-none focus:border-[#D4AF37]/50 transition-colors"
+            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white text-sm placeholder-white/50 focus:outline-none focus:border-[#D4AF37] transition-colors"
           />
         </div>
 
@@ -494,17 +494,17 @@ export default function AnimauxPage() {
         <div className="bg-white/5 border border-white/10 rounded-xl overflow-hidden mb-6">
           <div className="px-4 py-3 border-b border-white/10 flex items-center justify-between">
             <h2 className="text-[#D4AF37] font-semibold text-sm">Registre</h2>
-            <span className="text-white/30 text-xs">{animauxFiltres.length} résultat{animauxFiltres.length > 1 ? 's' : ''}</span>
+            <span className="text-white/60 text-xs">{animauxFiltres.length} résultat{animauxFiltres.length > 1 ? 's' : ''}</span>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-xs">
               <thead>
                 <tr className="border-b border-white/10">
-                  <th className="px-3 py-2 text-left text-white/40 font-medium">ID</th>
-                  <th className="px-3 py-2 text-left text-white/40 font-medium">Espèce</th>
-                  <th className="px-3 py-2 text-left text-white/40 font-medium">Race</th>
-                  <th className="px-3 py-2 text-left text-white/40 font-medium">Âge</th>
-                  <th className="px-3 py-2 text-right text-white/40 font-medium">État</th>
+                  <th className="px-3 py-2 text-left text-white/60 font-medium">ID</th>
+                  <th className="px-3 py-2 text-left text-white/60 font-medium">Espèce</th>
+                  <th className="px-3 py-2 text-left text-white/60 font-medium">Race</th>
+                  <th className="px-3 py-2 text-left text-white/60 font-medium">Âge</th>
+                  <th className="px-3 py-2 text-right text-white/60 font-medium">État</th>
                 </tr>
               </thead>
               <tbody>
@@ -527,7 +527,7 @@ export default function AnimauxPage() {
                 ))}
                 {animauxFiltres.length === 0 && (
                   <tr>
-                    <td colSpan={5} className="px-3 py-6 text-center text-white/30">
+                    <td colSpan={5} className="px-3 py-6 text-center text-white/60">
                       Aucun animal ne correspond à votre recherche.
                     </td>
                   </tr>

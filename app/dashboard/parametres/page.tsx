@@ -94,10 +94,10 @@ function Field({
           value={value}
           onChange={e => onChange(e.target.value)}
           placeholder={placeholder}
-          className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm placeholder-white/20 focus:outline-none focus:border-[#D4AF37]/50 transition-colors pr-12"
+          className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm placeholder-white/50 focus:outline-none focus:border-[#D4AF37] transition-colors pr-12"
         />
         {suffix && (
-          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 text-xs">
+          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-white/60 text-xs">
             {suffix}
           </span>
         )}
@@ -151,7 +151,7 @@ export default function ParametresPage() {
             <div>
               <div className="text-white font-semibold text-sm">
                 Plan {planDef.nom}
-                <span className="text-white/40 font-normal"> · {planDef.pourQui}</span>
+                <span className="text-white/60 font-normal"> · {planDef.pourQui}</span>
               </div>
               <div className="text-white/50 text-xs mt-1">
                 {plan === 'eleveur'
@@ -276,11 +276,11 @@ export default function ParametresPage() {
                     value={alertes.poidsMinVente}
                     onChange={e => patchAlertes('poidsMinVente', e.target.value)}
                     min="0"
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm focus:outline-none focus:border-[#D4AF37]/50 transition-colors pr-12"
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm focus:outline-none focus:border-[#D4AF37] transition-colors pr-12"
                   />
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 text-xs">kg</span>
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-white/60 text-xs">kg</span>
                 </div>
-                <p className="text-white/30 text-xs mt-1.5">
+                <p className="text-white/60 text-xs mt-1.5">
                   Alerte si un animal passe sous ce poids avant vente
                 </p>
               </div>
@@ -296,11 +296,11 @@ export default function ParametresPage() {
                     value={alertes.capaciteMax}
                     onChange={e => patchAlertes('capaciteMax', e.target.value)}
                     min="0"
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm focus:outline-none focus:border-[#D4AF37]/50 transition-colors pr-20"
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm focus:outline-none focus:border-[#D4AF37] transition-colors pr-20"
                   />
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 text-xs">animaux</span>
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-white/60 text-xs">animaux</span>
                 </div>
-                <p className="text-white/30 text-xs mt-1.5">
+                <p className="text-white/60 text-xs mt-1.5">
                   Alerte si le cheptel dépasse cette capacité
                 </p>
               </div>
@@ -324,7 +324,7 @@ export default function ParametresPage() {
       </form>
 
       {/* Version app */}
-      <p className="text-center text-white/20 text-xs mt-6">LivestockOS v0.1 · Sahel Agri-Tech</p>
+      <p className="text-center text-white/60 text-xs mt-6">LivestockOS v0.1 · Sahel Agri-Tech</p>
     </div>
   )
 }

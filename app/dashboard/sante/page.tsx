@@ -128,7 +128,7 @@ function ModalAjouterSoin({
       >
         <div className="flex items-center justify-between mb-5">
           <h2 className="text-[#D4AF37] font-bold text-lg">+ Enregistrer un soin</h2>
-          <button onClick={onClose} className="text-white/40 hover:text-white text-xl leading-none">×</button>
+          <button onClick={onClose} aria-label="Fermer" className="flex h-11 w-11 items-center justify-center text-white/60 hover:text-white text-xl leading-none">×</button>
         </div>
 
         <form onSubmit={submit} className="space-y-4">
@@ -139,7 +139,7 @@ function ModalAjouterSoin({
               type="date"
               value={form.date}
               onChange={e => handle('date', e.target.value)}
-              className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm focus:outline-none focus:border-[#D4AF37]/50"
+              className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm focus:outline-none focus:border-[#D4AF37]"
               required
             />
           </div>
@@ -152,7 +152,7 @@ function ModalAjouterSoin({
               placeholder="ex: BV-001, Troupeau ovin…"
               value={form.animal}
               onChange={e => handle('animal', e.target.value)}
-              className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm placeholder-white/20 focus:outline-none focus:border-[#D4AF37]/50"
+              className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm placeholder-white/50 focus:outline-none focus:border-[#D4AF37]"
               required
             />
           </div>
@@ -186,7 +186,7 @@ function ModalAjouterSoin({
               placeholder="ex: Vaccin fièvre aphteuse…"
               value={form.description}
               onChange={e => handle('description', e.target.value)}
-              className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm placeholder-white/20 focus:outline-none focus:border-[#D4AF37]/50"
+              className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm placeholder-white/50 focus:outline-none focus:border-[#D4AF37]"
               required
             />
           </div>
@@ -199,7 +199,7 @@ function ModalAjouterSoin({
               placeholder="ex: Dr Konaté"
               value={form.veterinaire}
               onChange={e => handle('veterinaire', e.target.value)}
-              className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm placeholder-white/20 focus:outline-none focus:border-[#D4AF37]/50"
+              className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm placeholder-white/50 focus:outline-none focus:border-[#D4AF37]"
             />
           </div>
 
@@ -211,7 +211,7 @@ function ModalAjouterSoin({
               placeholder="0"
               value={form.cout}
               onChange={e => handle('cout', e.target.value)}
-              className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm placeholder-white/20 focus:outline-none focus:border-[#D4AF37]/50"
+              className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm placeholder-white/50 focus:outline-none focus:border-[#D4AF37]"
               min="0"
             />
           </div>
@@ -374,7 +374,7 @@ export default function SantePage() {
                     <span className="text-lg">{TYPES_ICONS[v.type]}</span>
                     <div className="flex-1 min-w-0">
                       <div className="text-white text-xs font-semibold">{v.animal} — {v.description}</div>
-                      <div className="text-white/40 text-[10px]">{v.veterinaire} · {formatDate(v.date)}</div>
+                      <div className="text-white/60 text-[10px]">{v.veterinaire} · {formatDate(v.date)}</div>
                     </div>
                     <span className={`text-[10px] font-bold px-2 py-1 rounded-full shrink-0 ${
                       jours <= 2
@@ -408,16 +408,16 @@ export default function SantePage() {
                   <span className="text-xl">{TYPES_ICONS[s.type]}</span>
                   <div>
                     <span className="text-white font-semibold text-sm">{s.animal}</span>
-                    <span className="text-white/40 text-xs ml-1">({s.groupe})</span>
+                    <span className="text-white/60 text-xs ml-1">({s.groupe})</span>
                   </div>
                 </div>
                 <StatutBadge statut={s.statut} />
               </div>
               <div className="ml-8 space-y-1.5">
                 <div className="text-white/80 text-xs font-medium">{s.type} · {s.description}</div>
-                <div className="text-white/40 text-xs">👨‍⚕️ {s.veterinaire}</div>
+                <div className="text-white/60 text-xs">👨‍⚕️ {s.veterinaire}</div>
                 <div className="flex items-center justify-between">
-                  <div className="flex gap-3 text-xs text-white/40">
+                  <div className="flex gap-3 text-xs text-white/60">
                     <span>📅 {formatDate(s.date)}</span>
                     {s.prochaine && (
                       <span className="text-[#00BCD4]">🔄 {formatDate(s.prochaine)}</span>

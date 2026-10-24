@@ -71,7 +71,7 @@ export default async function VerifierPage({
         <div className="flex items-center gap-2 mb-6">
           <span className="text-xl">🐄</span>
           <span className="font-bold text-[#D4AF37]">LivestockOS</span>
-          <span className="text-white/30 text-xs ml-auto font-mono">{snapshot.code}</span>
+          <span className="text-white/60 text-xs ml-auto font-mono">{snapshot.code}</span>
         </div>
 
         <div className="bg-green-500/10 border border-green-500/30 rounded-xl px-4 py-4 mb-6 flex items-start gap-3">
@@ -115,7 +115,7 @@ export default async function VerifierPage({
 
         {/* Identité */}
         <div className="border border-white/10 rounded-xl p-5 mb-4">
-          <div className="text-white/40 text-[10px] uppercase tracking-wide mb-1">Éleveur</div>
+          <div className="text-white/60 text-[10px] uppercase tracking-wide mb-1">Éleveur</div>
           <div className="text-white font-semibold">{snapshot.payload.eleveur}</div>
         </div>
 
@@ -127,28 +127,28 @@ export default async function VerifierPage({
           <div className="flex items-baseline justify-between mb-4 pb-4 border-b border-white/10">
             <div>
               <div className="text-3xl font-bold text-[#D4AF37]">{snapshot.nbTetes}</div>
-              <div className="text-white/40 text-[11px]">
+              <div className="text-white/60 text-[11px]">
                 {snapshot.nbTetes > 1 ? 'têtes déclarées' : 'tête déclarée'}
               </div>
             </div>
             <div className="text-right">
               <div className="text-xl font-bold text-[#00BCD4]">{fcfa(snapshot.valeurTotale)}</div>
-              <div className="text-white/40 text-[11px]">FCFA — valeur estimée</div>
+              <div className="text-white/60 text-[11px]">FCFA — valeur estimée</div>
             </div>
           </div>
 
           <div className="grid grid-cols-3 gap-3 text-center">
             <div>
               <div className="text-lg font-bold text-green-400">{snapshot.couvertureVaccinale}%</div>
-              <div className="text-white/40 text-[10px] mt-0.5">couverture vaccinale</div>
+              <div className="text-white/60 text-[10px] mt-0.5">couverture vaccinale</div>
             </div>
             <div>
               <div className="text-lg font-bold text-white">{fcfa(snapshot.revenus12m)}</div>
-              <div className="text-white/40 text-[10px] mt-0.5">FCFA sur 12 mois</div>
+              <div className="text-white/60 text-[10px] mt-0.5">FCFA sur 12 mois</div>
             </div>
             <div>
               <div className="text-lg font-bold text-white">{snapshot.payload.moisActifs}/12</div>
-              <div className="text-white/40 text-[10px] mt-0.5">mois avec vente</div>
+              <div className="text-white/60 text-[10px] mt-0.5">mois avec vente</div>
             </div>
           </div>
         </div>
@@ -156,12 +156,12 @@ export default async function VerifierPage({
         {/* Composition */}
         {snapshot.payload.parEspece && (
           <div className="border border-white/10 rounded-xl p-5 mb-5">
-            <div className="text-white/40 text-[10px] uppercase tracking-wide mb-3">Composition</div>
+            <div className="text-white/60 text-[10px] uppercase tracking-wide mb-3">Composition</div>
             <div className="grid grid-cols-4 gap-2 text-center">
               {Object.entries(snapshot.payload.parEspece).map(([espece, n]) => (
                 <div key={espece}>
                   <div className="text-white font-semibold text-sm">{n}</div>
-                  <div className="text-white/40 text-[10px]">{espece}</div>
+                  <div className="text-white/60 text-[10px]">{espece}</div>
                 </div>
               ))}
             </div>
@@ -178,9 +178,9 @@ export default async function VerifierPage({
               <table className="w-full text-[11px]">
                 <thead>
                   <tr className="border-b border-white/10">
-                    <th className="text-left py-1.5 text-white/40 font-medium">Date</th>
-                    <th className="text-left py-1.5 text-white/40 font-medium">Acheteur</th>
-                    <th className="text-right py-1.5 text-white/40 font-medium">Montant</th>
+                    <th className="text-left py-1.5 text-white/60 font-medium">Date</th>
+                    <th className="text-left py-1.5 text-white/60 font-medium">Acheteur</th>
+                    <th className="text-right py-1.5 text-white/60 font-medium">Montant</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -228,13 +228,13 @@ export default async function VerifierPage({
               </span>
             </li>
           </ul>
-          <p className="text-white/30 text-[10px] mt-4 leading-relaxed">
+          <p className="text-white/60 text-[10px] mt-4 leading-relaxed">
             Une visite de contrôle reste recommandée avant tout engagement financier. La régularité
             des publications dans le temps est le meilleur indicateur disponible dans ce document.
           </p>
         </div>
 
-        <p className="text-center text-white/20 text-[10px] mt-6">
+        <p className="text-center text-white/60 text-[10px] mt-6">
           Vérifié sur livestock-os.vercel.app — code {snapshot.code}
         </p>
       </div>

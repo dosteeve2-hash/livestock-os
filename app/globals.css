@@ -52,3 +52,31 @@ body {
     border-color: #00BCD4;
   }
 }
+
+/* Accessibilité : jetons de la charte SDC (alias des couleurs en dur), focus visible, mouvement réduit */
+:root {
+  --bg: #0A1628;
+  --text: #ffffff;
+  --text2: rgba(255, 255, 255, 0.7);
+  --text3: rgba(255, 255, 255, 0.6);
+  --accent: var(--gold);
+  --second: var(--cyan);
+  --ok: #4ade80;
+  --danger: #f87171;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
