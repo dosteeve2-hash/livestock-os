@@ -1,5 +1,4 @@
 import Link from 'next/link'
-import ProjectVideo from '@/components/ProjectVideo'
 
 export default function LandingPage() {
   return (
@@ -63,11 +62,8 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Vidéo */}
       <section className="px-6 pb-12 max-w-2xl mx-auto w-full text-center">
-        <h2 className="text-[#D4AF37] font-bold text-lg mb-4">LivestockOS en vidéo</h2>
-        <ProjectVideo slug="livestock" lang="fr" title="Vidéo de présentation de LivestockOS" />
-        <div className="flex flex-col sm:flex-row gap-3 mt-5 justify-center">
+        <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <Link
             href="/tarifs"
             className="px-6 py-3 bg-[#D4AF37] text-[#0A1628] rounded-xl font-bold text-base hover:bg-[#D4AF37]/90 transition-colors"
