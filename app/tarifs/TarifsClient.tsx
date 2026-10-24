@@ -2,7 +2,8 @@
 
 import Link from 'next/link'
 import { useState } from 'react'
-import { motion } from 'framer-motion'
+import { motion, useReducedMotion } from 'framer-motion'
+import { ArrowUpRight, Check } from 'lucide-react'
 import { ORDRE_PLANS, PLANS, formatFcfa, type Plan } from '@/lib/plans/plans'
 
 interface Props {
@@ -22,103 +23,103 @@ function lienActivation(plan: Plan, annuel: boolean, whatsapp: string | null, em
 
 export default function TarifsClient({ planActuel, connecte, contactWhatsapp, contactEmail }: Props) {
   const [annuel, setAnnuel] = useState(true)
+  const reducedMotion = useReducedMotion()
 
   return (
     <>
-      {/* Bascule */}
-      <div className="flex items-center justify-center gap-3 mb-8">
+      <div className="mb-8 flex items-center justify-center gap-2" role="group" aria-label="Période de facturation">
         <button
+          type="button"
           onClick={() => setAnnuel(false)}
-          className={`text-sm px-4 py-2 rounded-full border transition-colors ${
-            !annuel ? 'border-[#D4AF37] text-[#D4AF37] bg-[#D4AF37]/10' : 'border-white/10 text-white/50'
+          aria-pressed={!annuel}
+          className={`min-h-[48px] rounded-full border px-5 text-sm font-medium transition-colors ${
+            !annuel ? 'border-leather bg-leather text-paper-light' : 'border-leather/20 text-ink-soft hover:border-leather/50'
           }`}
         >
           Mensuel
         </button>
         <button
+          type="button"
           onClick={() => setAnnuel(true)}
-          className={`text-sm px-4 py-2 rounded-full border transition-colors ${
-            annuel ? 'border-[#D4AF37] text-[#D4AF37] bg-[#D4AF37]/10' : 'border-white/10 text-white/50'
+          aria-pressed={annuel}
+          className={`min-h-[48px] rounded-full border px-5 text-sm font-medium transition-colors ${
+            annuel ? 'border-leather bg-leather text-paper-light' : 'border-leather/20 text-ink-soft hover:border-leather/50'
           }`}
         >
-          Annuel <span className="text-[#00BCD4] text-xs ml-1">2 mois offerts</span>
+          Annuel <span className={annuel ? 'ml-1 text-paper' : 'ml-1 text-sage'}>2 mois offerts</span>
         </button>
       </div>
 
-      {/* Cartes */}
-      <div className="grid gap-4 md:grid-cols-3 max-w-4xl mx-auto w-full">
-        {ORDRE_PLANS.map((id, i) => {
-          const p = PLANS[id]
-          const prix = annuel ? p.prixAnnuel : p.prixMensuel
+      <div className="mx-auto grid w-full max-w-6xl gap-4 md:grid-cols-3">
+        {ORDRE_PLANS.map((id, index) => {
+          const plan = PLANS[id]
+          const prix = annuel ? plan.prixAnnuel : plan.prixMensuel
           const estActuel = planActuel === id
+          const misEnAvant = Boolean(plan.misEnAvant)
+
           return (
-            <motion.div
+            <motion.article
               key={id}
-              initial={{ opacity: 0, y: 16 }}
+              initial={reducedMotion ? false : { opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.08 }}
-              className={`relative flex flex-col min-w-0 rounded-2xl p-6 border ${
-                p.misEnAvant
-                  ? 'border-[#D4AF37] bg-[#D4AF37]/[0.06]'
-                  : 'border-white/10 bg-white/5'
+              transition={reducedMotion ? { duration: 0 } : { delay: index * 0.08, duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+              className={`flex min-w-0 flex-col rounded-[18px] border p-6 sm:p-7 ${
+                misEnAvant ? 'border-ochre/50 bg-paper-light shadow-[0_18px_48px_rgba(65,47,27,0.1)]' : 'border-leather/12 bg-paper-light'
               }`}
             >
-              {p.misEnAvant && (
-                <span className="absolute -top-3 left-1/2 -translate-x-1/2 text-[10px] font-bold uppercase tracking-wider bg-[#D4AF37] text-[#0A1628] px-3 py-1 rounded-full">
-                  Le plus choisi
-                </span>
-              )}
-              <h2 className="text-[#D4AF37] font-bold text-xl">{p.nom}</h2>
-              <p className="text-white/50 text-xs mt-1">{p.pourQui}</p>
-
-              <div className="mt-5 mb-1">
-                <span className="text-2xl md:text-3xl font-bold text-white">{formatFcfa(prix)}</span>
-                {prix > 0 && (
-                  <span className="text-white/40 text-sm"> / {annuel ? 'an' : 'mois'}</span>
-                )}
+              <div className="flex items-center justify-between gap-3">
+                <h2 className="font-display text-2xl font-semibold text-leather">{plan.nom}</h2>
+                {estActuel && <span className="rounded-full bg-sage/10 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-sage">Plan actuel</span>}
+                {misEnAvant && !estActuel && <span className="rounded-full bg-ochre/10 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-ochre">Jusqu&apos;à 200 têtes</span>}
               </div>
-              <p className="text-white/40 text-xs h-4">
-                {prix > 0 && annuel && `soit ${formatFcfa(Math.round(prix / 12))} par mois`}
-                {prix === 0 && 'pour toujours'}
+              <p className="mt-1 text-sm text-ink-muted">{plan.pourQui}</p>
+
+              <div className="mt-6 flex min-h-[58px] flex-wrap items-baseline gap-x-2">
+                <span className="font-display text-3xl font-semibold tracking-tight text-ink sm:text-4xl">{formatFcfa(prix)}</span>
+                {prix > 0 && <span className="text-sm text-ink-muted">/ {annuel ? 'an' : 'mois'}</span>}
+              </div>
+              <p className="mt-1 min-h-[20px] text-xs text-ink-muted">
+                {prix > 0 && annuel && `Soit ${formatFcfa(Math.round(prix / 12))} par mois`}
+                {prix === 0 && 'Sans limite de durée'}
               </p>
 
-              <ul className="mt-5 space-y-2 flex-1">
-                {p.inclus.map((l) => (
-                  <li key={l} className="text-white/75 text-sm flex gap-2">
-                    <span className="text-[#00BCD4]">✓</span>
-                    <span>{l}</span>
+              <ul className="mt-6 flex-1 space-y-3 border-t border-leather/10 pt-5">
+                {plan.inclus.map((item) => (
+                  <li key={item} className="flex gap-2.5 text-sm leading-relaxed text-ink-soft">
+                    <Check size={16} className="mt-0.5 shrink-0 text-sage" aria-hidden="true" />
+                    <span>{item}</span>
                   </li>
                 ))}
               </ul>
 
-              <div className="mt-6">
+              <div className="mt-7">
                 {estActuel ? (
-                  <div className="w-full py-3 text-center text-sm rounded-xl border border-white/15 text-white/50">
+                  <div className="flex min-h-[48px] items-center justify-center rounded-full border border-sage/25 bg-sage/[0.06] text-sm font-medium text-sage" aria-current="true">
                     Votre plan actuel
                   </div>
                 ) : id === 'eleveur' ? (
                   <Link
                     href={connecte ? '/dashboard' : '/auth/register'}
-                    className="block w-full py-3 text-center text-sm font-bold rounded-xl border border-[#D4AF37]/40 text-[#D4AF37] hover:bg-[#D4AF37]/10 transition-colors"
+                    className="flex min-h-[50px] items-center justify-center rounded-full bg-leather px-5 text-center text-sm font-semibold text-paper-light transition-colors hover:bg-sage"
                   >
-                    {connecte ? 'Retour au tableau de bord' : 'Commencer gratuitement'}
+                    {connecte ? 'Retour au tableau de bord' : 'Créer un compte gratuit'}
                   </Link>
                 ) : (
                   <a
                     href={lienActivation(id, annuel, contactWhatsapp, contactEmail)}
                     target="_blank"
                     rel="noreferrer"
-                    className={`block w-full py-3 text-center text-sm font-bold rounded-xl transition-colors ${
-                      p.misEnAvant
-                        ? 'bg-[#D4AF37] text-[#0A1628] hover:bg-[#D4AF37]/90'
-                        : 'border border-[#D4AF37]/40 text-[#D4AF37] hover:bg-[#D4AF37]/10'
+                    className={`flex min-h-[50px] items-center justify-center gap-2 rounded-full px-5 text-center text-sm font-semibold transition-colors ${
+                      misEnAvant ? 'bg-ochre text-paper-light hover:bg-leather' : 'border border-leather/25 text-leather hover:border-sage hover:bg-sage hover:text-paper-light'
                     }`}
                   >
-                    Activer via Orange Money
+                    Demander l&apos;activation
+                    <ArrowUpRight size={15} aria-hidden="true" />
+                    <span className="sr-only">(ouvre un nouvel onglet)</span>
                   </a>
                 )}
               </div>
-            </motion.div>
+            </motion.article>
           )
         })}
       </div>

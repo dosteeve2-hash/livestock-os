@@ -1,50 +1,51 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
 import { headers } from 'next/headers'
 import { auth } from '@/lib/auth/server'
 import { abonnementDe } from '@/lib/plans/db'
 import TarifsClient from './TarifsClient'
+import PublicHeader from '@/components/public/PublicHeader'
+import PublicFooter from '@/components/public/PublicFooter'
+import SkipLink from '@/components/public/SkipLink'
 
 export const metadata: Metadata = {
   title: 'Tarifs — LivestockOS',
-  description:
-    'Gratuit jusqu’à 20 têtes. Plan Troupeau à 3 000 FCFA par mois : passeports vérifiables illimités pour la microfinance.',
+  description: 'Un plan gratuit jusqu’à 20 têtes, puis des offres Troupeau et Coopérative activées manuellement.',
 }
 
 const ETAPES = [
   {
-    n: '1',
-    titre: 'Créez votre compte',
-    texte: 'Gratuit, en deux minutes. Enregistrez vos premiers animaux — même sans réseau.',
+    n: '01',
+    titre: 'Choisissez votre plan',
+    texte: 'Le plan Éleveur est gratuit jusqu’à 20 têtes. Les plans payants étendent les limites de suivi et de passeports.',
   },
   {
-    n: '2',
-    titre: 'Envoyez le montant par Orange Money',
-    texte: 'Puis écrivez-nous avec votre e-mail de connexion et la référence du transfert.',
+    n: '02',
+    titre: 'Contactez-nous après le transfert',
+    texte: 'Envoyez votre demande d’activation avec l’e-mail du compte et la référence du transfert Orange Money.',
   },
   {
-    n: '3',
-    titre: 'Votre plan est activé sous 24 h',
-    texte: 'Vous recevez une confirmation. Rien à installer, rien à reconfigurer.',
+    n: '03',
+    titre: 'L’activation est manuelle',
+    texte: 'Nous vérifions le transfert puis activons le plan. Vous recevez une confirmation.',
   },
 ]
 
 const FAQ = [
   {
-    q: 'Que se passe-t-il si je dépasse 20 têtes en plan Éleveur ?',
-    r: 'Vos animaux restent enregistrés. Vous ne pouvez simplement plus en ajouter, ni publier un passeport de plus de 20 têtes, tant que vous n’êtes pas passé au plan Troupeau.',
+    q: 'Que comprend le plan gratuit ?',
+    r: 'Le plan Éleveur est gratuit jusqu’à 20 têtes. Il comprend le registre du cheptel, la santé, les ventes, le fonctionnement hors réseau et une publication de passeport par an.',
   },
   {
-    q: 'Pourquoi payer pour un passeport ?',
-    r: 'Parce qu’il est daté par le serveur et vérifiable par un lien : une microfinance peut constater elle-même l’ancienneté de votre suivi. C’est ce document qui ouvre l’accès au crédit — pas le registre.',
+    q: 'Que prouve un passeport vérifiable ?',
+    r: 'Le lien permet de consulter un relevé publié et sa date horodatée par le serveur. Les informations viennent des saisies de l’éleveur : le passeport ne confirme ni la présence physique des animaux ni leur valeur.',
   },
   {
-    q: 'Et si j’arrête de payer ?',
-    r: 'Vous revenez au plan Éleveur. Aucune donnée n’est supprimée, jamais.',
+    q: 'Que se passe-t-il si mon abonnement expire ?',
+    r: 'Le compte revient au plan Éleveur. Les données déjà enregistrées ne sont pas supprimées.',
   },
   {
-    q: 'Pourquoi Orange Money et pas une carte bancaire ?',
-    r: 'Parce que c’est ce que vous avez dans la poche. Le paiement par carte viendra, mais il ne passera jamais devant le mobile money.',
+    q: 'Le paiement et l’activation sont-ils automatiques ?',
+    r: 'Non. Envoyez votre demande et la référence du transfert Orange Money. Le plan est activé manuellement après vérification.',
   },
 ]
 
@@ -55,91 +56,75 @@ export default async function TarifsPage() {
     : null
 
   const contactWhatsapp = process.env.NEXT_PUBLIC_ACTIVATION_WHATSAPP?.replace(/\D/g, '') || null
-  const contactEmail = process.env.NEXT_PUBLIC_ACTIVATION_EMAIL || 'docompaore2@gmail.com'
+  const contactEmail = 'docompaore2@gmail.com'
 
   return (
-    <main className="min-h-screen bg-[#0A1628] flex flex-col">
-      <header className="px-6 py-5 flex items-center justify-between border-b border-white/10">
-        <Link href="/" className="flex items-center gap-2">
-          <span className="text-2xl">🐄</span>
-          <span className="text-lg font-bold text-[#D4AF37]">LivestockOS</span>
-        </Link>
-        <Link
-          href={session ? '/dashboard' : '/auth/login'}
-          className="text-sm text-[#00BCD4] hover:text-[#D4AF37] transition-colors font-medium"
-        >
-          {session ? 'Tableau de bord →' : 'Connexion →'}
-        </Link>
-      </header>
+    <>
+      <SkipLink />
+      <PublicHeader />
+      <main id="contenu" className="paper-grain min-h-screen bg-paper">
+        <section className="px-5 pb-10 pt-16 text-center sm:px-8 sm:pb-14 sm:pt-24">
+          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-ochre">Des tarifs lisibles</p>
+          <h1 className="mx-auto mt-4 max-w-3xl font-display text-[2.7rem] font-semibold leading-[1.02] tracking-[-0.035em] text-leather sm:text-6xl">
+            Un carnet gratuit pour commencer.
+          </h1>
+          <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-ink-soft sm:text-lg">
+            Jusqu&apos;à 20 têtes sans frais. Les plans payants s&apos;activent manuellement après vérification du transfert.
+          </p>
+        </section>
 
-      <section className="px-6 pt-14 pb-10 text-center max-w-2xl mx-auto">
-        <h1 className="text-3xl sm:text-4xl font-bold text-[#D4AF37] leading-tight mb-4">
-          Gratuit jusqu&apos;à 20 têtes.
-          <br />
-          Ensuite, le prix d&apos;une dose de vaccin.
-        </h1>
-        <p className="text-white/60 text-base leading-relaxed">
-          Un troupeau de 60 têtes vaut plusieurs millions de FCFA. Le suivre, le prouver et le
-          présenter à une microfinance coûte 3 000 FCFA par mois.
-        </p>
-      </section>
+        <section className="px-5 pb-20 sm:px-8 sm:pb-24" aria-label="Comparer les plans">
+          <TarifsClient
+            planActuel={abonnement?.effectif ?? null}
+            connecte={Boolean(session)}
+            contactWhatsapp={contactWhatsapp}
+            contactEmail={contactEmail}
+          />
+          <p className="mx-auto mt-6 max-w-4xl text-center text-xs leading-relaxed text-ink-muted">
+            Les prix affichés sont les tarifs des plans LivestockOS. Le paiement n&apos;est pas automatisé ; l&apos;activation intervient après vérification manuelle du transfert.
+          </p>
+        </section>
 
-      <section className="px-6 pb-16">
-        <TarifsClient
-          planActuel={abonnement?.effectif ?? null}
-          connecte={Boolean(session)}
-          contactWhatsapp={contactWhatsapp}
-          contactEmail={contactEmail}
-        />
-      </section>
+        <section className="bg-paper-light px-5 py-16 sm:px-8 sm:py-20" aria-labelledby="titre-activer">
+          <div className="mx-auto max-w-5xl">
+            <div className="max-w-2xl">
+              <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-sage">Après le choix du plan</p>
+              <h2 id="titre-activer" className="mt-3 font-display text-3xl font-semibold text-leather sm:text-4xl">Comment activer un plan</h2>
+            </div>
+            <ol className="mt-8 grid gap-3 md:grid-cols-3">
+              {ETAPES.map((etape) => (
+                <li key={etape.n} className="rounded-[16px] border border-leather/12 bg-paper p-5 sm:p-6">
+                  <span className="font-mono text-xs text-brick">{etape.n} / 03</span>
+                  <h3 className="mt-4 font-display text-xl font-semibold text-leather">{etape.titre}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-ink-soft">{etape.texte}</p>
+                </li>
+              ))}
+            </ol>
+            <p className="mt-5 text-sm text-ink-muted">
+              Contact : <a href={`mailto:${contactEmail}`} className="inline-flex min-h-[44px] items-center font-medium text-sage underline decoration-sage/35 underline-offset-4 hover:decoration-sage">{contactEmail}</a>
+            </p>
+          </div>
+        </section>
 
-      <section id="activer" className="px-6 pb-16 max-w-2xl mx-auto w-full">
-        <h2 className="text-[#D4AF37] font-bold text-lg mb-6 text-center">Comment activer un plan</h2>
-        <ol className="space-y-4">
-          {ETAPES.map((e) => (
-            <li key={e.n} className="flex gap-4 bg-white/5 border border-white/10 rounded-xl p-4">
-              <span className="shrink-0 w-8 h-8 rounded-full bg-[#D4AF37] text-[#0A1628] font-bold flex items-center justify-center">
-                {e.n}
-              </span>
-              <div>
-                <div className="text-white font-semibold text-sm">{e.titre}</div>
-                <div className="text-white/55 text-xs mt-1 leading-relaxed">{e.texte}</div>
-              </div>
-            </li>
-          ))}
-        </ol>
-        <p className="text-white/35 text-xs text-center mt-4">
-          Contact :{' '}
-          {contactWhatsapp ? (
-            <a href={`https://wa.me/${contactWhatsapp}`} className="text-[#00BCD4] hover:underline">
-              WhatsApp
-            </a>
-          ) : (
-            <a href={`mailto:${contactEmail}`} className="text-[#00BCD4] hover:underline">
-              {contactEmail}
-            </a>
-          )}
-        </p>
-      </section>
-
-      <section className="px-6 pb-16 max-w-2xl mx-auto w-full">
-        <h2 className="text-[#D4AF37] font-bold text-lg mb-6 text-center">Questions fréquentes</h2>
-        <div className="space-y-3">
-          {FAQ.map((f) => (
-            <details key={f.q} className="group bg-white/5 border border-white/10 rounded-xl p-4">
-              <summary className="cursor-pointer text-white text-sm font-medium list-none flex justify-between items-center">
-                {f.q}
-                <span className="text-white/30 group-open:rotate-45 transition-transform">+</span>
-              </summary>
-              <p className="text-white/55 text-xs mt-3 leading-relaxed">{f.r}</p>
-            </details>
-          ))}
-        </div>
-      </section>
-
-      <footer className="px-6 py-4 border-t border-white/10 text-center">
-        <p className="text-white/40 text-xs">© 2026 LivestockOS · FORGE Afrika · Burkina Faso</p>
-      </footer>
-    </main>
+        <section className="px-5 py-16 sm:px-8 sm:py-20" aria-labelledby="titre-faq">
+          <div className="mx-auto max-w-3xl">
+            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-ochre">Avant de commencer</p>
+            <h2 id="titre-faq" className="mt-3 font-display text-3xl font-semibold text-leather sm:text-4xl">Questions fréquentes</h2>
+            <div className="mt-7 divide-y divide-leather/15 border-y border-leather/15">
+              {FAQ.map((item) => (
+                <details key={item.q} className="group py-5">
+                  <summary className="flex min-h-[44px] cursor-pointer list-none items-center justify-between gap-5 font-medium text-ink marker:content-none">
+                    {item.q}
+                    <span aria-hidden="true" className="shrink-0 font-mono text-xl text-ochre transition-transform duration-300 group-open:rotate-45">+</span>
+                  </summary>
+                  <p className="max-w-2xl pb-1 pr-8 text-sm leading-relaxed text-ink-soft">{item.r}</p>
+                </details>
+              ))}
+            </div>
+          </div>
+        </section>
+      </main>
+      <PublicFooter />
+    </>
   )
 }

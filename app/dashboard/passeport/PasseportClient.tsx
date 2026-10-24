@@ -170,9 +170,9 @@ export default function PasseportClient({ nom, email, membreDepuis }: Props) {
         <div className="no-print bg-[#00BCD4]/10 border border-[#00BCD4]/30 rounded-xl px-4 py-3 mb-6 flex items-start gap-3">
           <span className="text-lg shrink-0">💡</span>
           <p className="text-white/70 text-xs leading-relaxed">
-            Ce document rassemble la preuve de votre activité : taille du troupeau, suivi
-            sanitaire et revenus des douze derniers mois. Imprimez-le ou enregistrez-le en PDF
-            pour l&apos;emporter à la banque.
+            Ce document rassemble les données saisies dans votre registre : taille du troupeau,
+            suivi sanitaire et revenus des douze derniers mois. Les valeurs restent déclaratives.
+            Imprimez-le ou enregistrez-le en PDF pour le transmettre.
           </p>
         </div>
 
@@ -186,7 +186,7 @@ export default function PasseportClient({ nom, email, membreDepuis }: Props) {
               </div>
               <p className="text-white/60 text-xs mb-3 leading-relaxed">
                 Transmettez ce lien à votre prêteur. Il y verra les mêmes chiffres, la date de
-                publication certifiée par le serveur, et depuis combien de temps vous tenez ce suivi.
+                publication enregistrée par le serveur, et l&apos;historique des relevés disponibles.
               </p>
               <div className="bg-[#0A1628] border border-white/10 rounded-lg px-3 py-2.5 mb-2">
                 <div className="text-white/40 text-[10px] mb-1">Code du relevé</div>
@@ -208,9 +208,9 @@ export default function PasseportClient({ nom, email, membreDepuis }: Props) {
                 <span className="text-[#D4AF37] text-sm font-semibold">Rendre ce relevé vérifiable</span>
               </div>
               <p className="text-white/60 text-xs mb-3 leading-relaxed">
-                Publier enregistre ces chiffres avec une date certifiée par le serveur, et vous donne
-                un lien que votre prêteur peut ouvrir lui-même. Publiez régulièrement : c&apos;est
-                l&apos;ancienneté du suivi qui donne du poids au dossier.
+                Publier enregistre ces chiffres avec une date horodatée par le serveur et crée un
+                lien consultable. Des publications successives documentent l&apos;historique de votre
+                registre, sans garantir un financement.
               </p>
               {publication.etat === 'erreur' && (
                 <p className="text-red-400 text-xs mb-2">
@@ -317,7 +317,8 @@ export default function PasseportClient({ nom, email, membreDepuis }: Props) {
           <p className="text-white/50 text-[11px] leading-relaxed">
             {animauxPluriel(bilan.couverts)} sur {bilan.vivants.length}{' '}
             {bilan.couverts > 1 ? 'ont reçu' : 'a reçu'} au moins une vaccination sur la période. Un troupeau suivi tombe moins malade —
-            c&apos;est ce qui réduit le risque pour un prêteur.
+            ce relevé reprend les soins enregistrés dans votre registre. Il ne remplace pas un
+            contrôle vétérinaire ni une vérification des animaux sur le terrain.
           </p>
         </div>
 
