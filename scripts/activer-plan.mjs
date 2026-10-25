@@ -52,6 +52,19 @@ try {
     [id, plan, mois, reference]
   )
   const { expire_le } = r.rows[0]
+  if (reference) {
+    // Déclaration faite sur /payer avec cet ID de transaction : on la clôt.
+    try {
+      const d = await pool.query(
+        `UPDATE demande_paiement SET statut = 'validee', traite_le = now()
+         WHERE reference_transfert = upper($1) AND user_id = $2 AND statut = 'en_attente'`,
+        [reference.trim(), id]
+      )
+      if (d.rowCount) console.log(`  déclaration ${reference} marquée validée`)
+    } catch {
+      // Migration 002 pas passée : rien à clore.
+    }
+  }
   console.log(
     `✔ ${name || email} → plan ${plan}` +
       (expire_le ? `, jusqu'au ${new Date(expire_le).toLocaleDateString('fr-FR')}` : ', sans échéance') +

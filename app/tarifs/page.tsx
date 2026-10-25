@@ -20,8 +20,8 @@ const ETAPES = [
   },
   {
     n: '02',
-    titre: 'Contactez-nous après le transfert',
-    texte: 'Envoyez votre demande d’activation avec l’e-mail du compte et la référence du transfert Orange Money.',
+    titre: 'Payez et déclarez le transfert',
+    texte: 'Sur la page Payer : envoyez le montant par Orange Money avec votre code, puis saisissez l’ID de transaction reçu par SMS.',
   },
   {
     n: '03',
@@ -45,7 +45,7 @@ const FAQ = [
   },
   {
     q: 'Le paiement et l’activation sont-ils automatiques ?',
-    r: 'Non. Envoyez votre demande et la référence du transfert Orange Money. Le plan est activé manuellement après vérification.',
+    r: 'Non. Vous payez par Orange Money et déclarez l’ID de transaction sur la page Payer. Le plan est activé manuellement après vérification.',
   },
 ]
 
@@ -55,7 +55,6 @@ export default async function TarifsPage() {
     ? await abonnementDe(session.user.id, session.user.email)
     : null
 
-  const contactWhatsapp = process.env.NEXT_PUBLIC_ACTIVATION_WHATSAPP?.replace(/\D/g, '') || null
   const contactEmail = 'docompaore2@gmail.com'
 
   return (
@@ -77,8 +76,6 @@ export default async function TarifsPage() {
           <TarifsClient
             planActuel={abonnement?.effectif ?? null}
             connecte={Boolean(session)}
-            contactWhatsapp={contactWhatsapp}
-            contactEmail={contactEmail}
           />
           <p className="mx-auto mt-6 max-w-4xl text-center text-xs leading-relaxed text-ink-muted">
             Les prix affichés sont les tarifs des plans LivestockOS. Le paiement n&apos;est pas automatisé ; l&apos;activation intervient après vérification manuelle du transfert.

@@ -9,19 +9,9 @@ import { ORDRE_PLANS, PLANS, formatFcfa, type Plan } from '@/lib/plans/plans'
 interface Props {
   planActuel: Plan | null
   connecte: boolean
-  contactWhatsapp: string | null
-  contactEmail: string
 }
 
-function lienActivation(plan: Plan, annuel: boolean, whatsapp: string | null, email: string) {
-  const p = PLANS[plan]
-  const montant = annuel ? p.prixAnnuel : p.prixMensuel
-  const texte = `Bonjour, je souhaite activer le plan ${p.nom} de LivestockOS (${formatFcfa(montant)} ${annuel ? 'par an' : 'par mois'}). Mon e-mail de connexion : `
-  if (whatsapp) return `https://wa.me/${whatsapp}?text=${encodeURIComponent(texte)}`
-  return `mailto:${email}?subject=${encodeURIComponent(`Activation plan ${p.nom} — LivestockOS`)}&body=${encodeURIComponent(texte)}`
-}
-
-export default function TarifsClient({ planActuel, connecte, contactWhatsapp, contactEmail }: Props) {
+export default function TarifsClient({ planActuel, connecte }: Props) {
   const [annuel, setAnnuel] = useState(true)
   const reducedMotion = useReducedMotion()
 
@@ -105,18 +95,15 @@ export default function TarifsClient({ planActuel, connecte, contactWhatsapp, co
                     {connecte ? 'Retour au tableau de bord' : 'Créer un compte gratuit'}
                   </Link>
                 ) : (
-                  <a
-                    href={lienActivation(id, annuel, contactWhatsapp, contactEmail)}
-                    target="_blank"
-                    rel="noreferrer"
+                  <Link
+                    href={`/payer?plan=${id}&periode=${annuel ? 'an' : 'mois'}`}
                     className={`flex min-h-[50px] items-center justify-center gap-2 rounded-full px-5 text-center text-sm font-semibold transition-colors ${
                       misEnAvant ? 'bg-ochre text-paper-light hover:bg-leather' : 'border border-leather/25 text-leather hover:border-sage hover:bg-sage hover:text-paper-light'
                     }`}
                   >
-                    Demander l&apos;activation
+                    Payer par Orange Money
                     <ArrowUpRight size={15} aria-hidden="true" />
-                    <span className="sr-only">(ouvre un nouvel onglet)</span>
-                  </a>
+                  </Link>
                 )}
               </div>
             </motion.article>
