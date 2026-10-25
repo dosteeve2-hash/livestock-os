@@ -1,11 +1,15 @@
 import type { Metadata } from 'next'
+import Link from 'next/link'
+import { ArrowLeft, BadgeCheck, CircleAlert, ShieldCheck } from 'lucide-react'
 import { historiqueDuCode, parCode } from '@/lib/passeport/db'
+import PublicHeader from '@/components/public/PublicHeader'
+import PublicFooter from '@/components/public/PublicFooter'
+import SkipLink from '@/components/public/SkipLink'
 
 export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
   title: 'Vérification de passeport — LivestockOS',
-  // Un lien de vérification circule entre l'éleveur et son prêteur, pas sur le web.
   robots: { index: false, follow: false },
 }
 
@@ -35,26 +39,31 @@ function joursDepuis(iso: string) {
   return Math.floor((Date.now() - new Date(iso).getTime()) / 86_400_000)
 }
 
-export default async function VerifierPage({
-  params,
-}: {
-  params: Promise<{ code: string }>
-}) {
+export default async function VerifierPage({ params }: { params: Promise<{ code: string }> }) {
   const { code } = await params
   const snapshot = await parCode(decodeURIComponent(code).toUpperCase())
 
   if (!snapshot) {
     return (
-      <div className="min-h-screen bg-[#0A1628] flex items-center justify-center px-6">
-        <div className="max-w-sm text-center">
-          <div className="text-4xl mb-4">🔍</div>
-          <h1 className="text-white font-bold text-lg mb-2">Code introuvable</h1>
-          <p className="text-white/50 text-sm">
-            Aucun passeport ne correspond à ce code. Vérifiez la saisie, ou demandez à
-            l&apos;éleveur de vous renvoyer le lien.
-          </p>
-        </div>
-      </div>
+      <>
+        <SkipLink />
+        <PublicHeader />
+        <main id="contenu" className="paper-grain flex min-h-[70vh] items-center justify-center bg-paper px-5 py-16">
+          <div className="max-w-md text-center">
+            <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-paper-deep text-ochre" aria-hidden="true">
+              <CircleAlert size={25} strokeWidth={1.6} />
+            </span>
+            <h1 className="mt-5 font-display text-3xl font-semibold text-leather">Code introuvable</h1>
+            <p className="mt-3 text-sm leading-relaxed text-ink-soft">
+              Aucun passeport ne correspond à ce code. Vérifiez la saisie ou demandez à l&apos;éleveur de vous renvoyer le lien.
+            </p>
+            <Link href="/" className="mt-6 inline-flex min-h-[48px] items-center gap-2 rounded-full border border-leather/25 px-5 text-sm font-semibold text-leather hover:bg-paper-light">
+              <ArrowLeft size={15} aria-hidden="true" /> Retour à l&apos;accueil
+            </Link>
+          </div>
+        </main>
+        <PublicFooter />
+      </>
     )
   }
 
@@ -65,179 +74,139 @@ export default async function VerifierPage({
   const suiviEtabli = historique.total >= 3 && anciennete >= 60
 
   return (
-    <div className="min-h-screen bg-[#0A1628] px-4 py-8">
-      <div className="max-w-lg mx-auto">
-        {/* Bandeau d'authenticité */}
-        <div className="flex items-center gap-2 mb-6">
-          <span className="text-xl">🐄</span>
-          <span className="font-bold text-[#D4AF37]">LivestockOS</span>
-          <span className="text-white/30 text-xs ml-auto font-mono">{snapshot.code}</span>
-        </div>
-
-        <div className="bg-green-500/10 border border-green-500/30 rounded-xl px-4 py-4 mb-6 flex items-start gap-3">
-          <span className="text-xl shrink-0">✅</span>
-          <div>
-            <p className="text-green-300 text-sm font-semibold">Relevé authentique</p>
-            <p className="text-white/60 text-xs mt-1 leading-relaxed">
-              Publié le <strong className="text-white/90">{dateHeure(snapshot.publieLe)}</strong>.
-              Cette date est enregistrée par le serveur au moment de la publication — elle ne peut
-              pas être modifiée après coup.
-            </p>
-          </div>
-        </div>
-
-        {/* Antériorité — le vrai signal */}
-        <div
-          className={`rounded-xl px-4 py-4 mb-6 border ${
-            suiviEtabli
-              ? 'bg-[#D4AF37]/10 border-[#D4AF37]/30'
-              : 'bg-orange-500/10 border-orange-500/30'
-          }`}
-        >
-          <p className={`text-sm font-semibold ${suiviEtabli ? 'text-[#D4AF37]' : 'text-orange-300'}`}>
-            {suiviEtabli ? 'Suivi établi dans la durée' : 'Suivi récent'}
-          </p>
-          <p className="text-white/60 text-xs mt-1 leading-relaxed">
-            {historique.total === 1 ? (
-              <>
-                Il s&apos;agit du <strong className="text-white/90">premier relevé</strong> publié
-                par cet éleveur. Un relevé isolé ne permet pas de constater une régularité.
-              </>
-            ) : (
-              <>
-                <strong className="text-white/90">{historique.total} relevés</strong> publiés,
-                le premier {historique.premierePublication ? `le ${dateCourte(historique.premierePublication)}` : ''}
-                {anciennete > 0 && ` — soit ${anciennete} jours de suivi`}.
-              </>
-            )}
-          </p>
-        </div>
-
-        {/* Identité */}
-        <div className="border border-white/10 rounded-xl p-5 mb-4">
-          <div className="text-white/40 text-[10px] uppercase tracking-wide mb-1">Éleveur</div>
-          <div className="text-white font-semibold">{snapshot.payload.eleveur}</div>
-        </div>
-
-        {/* Chiffres */}
-        <h2 className="text-[#D4AF37] font-semibold text-xs mb-3 uppercase tracking-wide">
-          Situation au jour de la publication
-        </h2>
-        <div className="border border-white/10 rounded-xl p-5 mb-5">
-          <div className="flex items-baseline justify-between mb-4 pb-4 border-b border-white/10">
+    <>
+      <SkipLink />
+      <PublicHeader />
+      <main id="contenu" className="paper-grain min-h-screen bg-paper px-4 py-8 sm:px-6 sm:py-12">
+        <div className="mx-auto max-w-3xl">
+          <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
             <div>
-              <div className="text-3xl font-bold text-[#D4AF37]">{snapshot.nbTetes}</div>
-              <div className="text-white/40 text-[11px]">
-                {snapshot.nbTetes > 1 ? 'têtes déclarées' : 'tête déclarée'}
+              <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-ochre">Passeport du cheptel</p>
+              <p className="mt-1 font-mono text-xs text-ink-muted">Code · {snapshot.code}</p>
+            </div>
+            <span className="inline-flex min-h-[40px] items-center gap-2 rounded-full border border-sage/25 bg-sage/[0.06] px-3 text-xs font-semibold text-sage">
+              <BadgeCheck size={15} aria-hidden="true" /> Publication vérifiée
+            </span>
+          </div>
+
+          <section className="rounded-[18px] border border-sage/20 bg-sage/[0.06] p-4 sm:p-5" aria-labelledby="titre-publication">
+            <div className="flex items-start gap-3">
+              <ShieldCheck size={20} className="mt-0.5 shrink-0 text-sage" aria-hidden="true" />
+              <div>
+                <h1 id="titre-publication" className="font-display text-xl font-semibold text-sage sm:text-2xl">Date enregistrée par le serveur</h1>
+                <p className="mt-2 text-sm leading-relaxed text-ink-soft">
+                  Ce relevé a été publié le <strong className="text-ink">{dateHeure(snapshot.publieLe)}</strong>. La date de publication ne peut pas être modifiée après coup.
+                </p>
               </div>
             </div>
-            <div className="text-right">
-              <div className="text-xl font-bold text-[#00BCD4]">{fcfa(snapshot.valeurTotale)}</div>
-              <div className="text-white/40 text-[11px]">FCFA — valeur estimée</div>
-            </div>
-          </div>
+          </section>
 
-          <div className="grid grid-cols-3 gap-3 text-center">
-            <div>
-              <div className="text-lg font-bold text-green-400">{snapshot.couvertureVaccinale}%</div>
-              <div className="text-white/40 text-[10px] mt-0.5">couverture vaccinale</div>
-            </div>
-            <div>
-              <div className="text-lg font-bold text-white">{fcfa(snapshot.revenus12m)}</div>
-              <div className="text-white/40 text-[10px] mt-0.5">FCFA sur 12 mois</div>
-            </div>
-            <div>
-              <div className="text-lg font-bold text-white">{snapshot.payload.moisActifs}/12</div>
-              <div className="text-white/40 text-[10px] mt-0.5">mois avec vente</div>
-            </div>
-          </div>
-        </div>
-
-        {/* Composition */}
-        {snapshot.payload.parEspece && (
-          <div className="border border-white/10 rounded-xl p-5 mb-5">
-            <div className="text-white/40 text-[10px] uppercase tracking-wide mb-3">Composition</div>
-            <div className="grid grid-cols-4 gap-2 text-center">
-              {Object.entries(snapshot.payload.parEspece).map(([espece, n]) => (
-                <div key={espece}>
-                  <div className="text-white font-semibold text-sm">{n}</div>
-                  <div className="text-white/40 text-[10px]">{espece}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Ventes */}
-        {snapshot.payload.ventes?.length > 0 && (
-          <>
-            <h2 className="text-[#D4AF37] font-semibold text-xs mb-3 uppercase tracking-wide">
-              Ventes déclarées sur douze mois
+          <section className={`mt-4 rounded-[18px] border p-4 sm:p-5 ${suiviEtabli ? 'border-ochre/25 bg-ochre/[0.05]' : 'border-brick/20 bg-brick/[0.04]'}`} aria-labelledby="titre-anciennete">
+            <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-ink-muted">Historique de publication</p>
+            <h2 id="titre-anciennete" className={`mt-2 font-display text-xl font-semibold ${suiviEtabli ? 'text-ochre' : 'text-brick'}`}>
+              {suiviEtabli ? 'Plusieurs relevés publiés dans la durée' : 'Historique de publication récent'}
             </h2>
-            <div className="border border-white/10 rounded-xl p-5 mb-5 overflow-x-auto">
-              <table className="w-full text-[11px]">
-                <thead>
-                  <tr className="border-b border-white/10">
-                    <th className="text-left py-1.5 text-white/40 font-medium">Date</th>
-                    <th className="text-left py-1.5 text-white/40 font-medium">Acheteur</th>
-                    <th className="text-right py-1.5 text-white/40 font-medium">Montant</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {snapshot.payload.ventes.slice(0, 12).map((v, i) => (
-                    <tr key={i} className="border-b border-white/5">
-                      <td className="py-1.5 text-white/60 whitespace-nowrap">
-                        {new Date(v.date).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: '2-digit' })}
-                      </td>
-                      <td className="py-1.5 text-white/80">{v.acheteur}</td>
-                      <td className="py-1.5 text-right text-[#D4AF37] font-semibold whitespace-nowrap">
-                        {fcfa(v.prix)} F
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <p className="mt-2 text-sm leading-relaxed text-ink-soft">
+              {historique.total === 1 ? (
+                <>Il s&apos;agit du <strong>premier relevé</strong> publié par cet éleveur. Un relevé isolé ne permet pas de constater une régularité.</>
+              ) : (
+                <><strong>{historique.total} relevés</strong> publiés, le premier {historique.premierePublication ? `le ${dateCourte(historique.premierePublication)}` : ''}{anciennete > 0 && `, soit ${anciennete} jours de suivi`}.</>
+              )}
+            </p>
+          </section>
+
+          <section className="mt-4 rounded-[18px] border border-leather/12 bg-paper-light p-5 sm:p-6" aria-labelledby="titre-releve">
+            <div className="flex flex-wrap items-end justify-between gap-4 border-b border-leather/12 pb-4">
+              <div>
+                <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-ink-muted">Éleveur</p>
+                <h2 id="titre-releve" className="mt-1 font-display text-2xl font-semibold text-leather">{snapshot.payload.eleveur}</h2>
+              </div>
+              <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-ink-muted">Situation au jour de publication</p>
             </div>
-          </>
-        )}
 
-        {/* Portée du document — la partie qui rend le reste crédible */}
-        <div className="border border-white/10 rounded-xl p-5 bg-white/[0.02]">
-          <div className="text-white/60 text-xs font-semibold mb-3">Ce que ce relevé établit</div>
-          <ul className="space-y-2 text-[11px] text-white/50 leading-relaxed">
-            <li className="flex gap-2">
-              <span className="text-green-400 shrink-0">✓</span>
-              <span>
-                La <strong className="text-white/80">date de publication</strong>, horodatée par le
-                serveur et non modifiable.
-              </span>
-            </li>
-            <li className="flex gap-2">
-              <span className="text-green-400 shrink-0">✓</span>
-              <span>
-                L&apos;<strong className="text-white/80">antériorité du suivi</strong> : combien de
-                relevés cet éleveur a publiés, et depuis quand.
-              </span>
-            </li>
-            <li className="flex gap-2">
-              <span className="text-orange-400 shrink-0">✗</span>
-              <span>
-                <strong className="text-white/80">L&apos;existence physique des animaux.</strong> Les
-                quantités et les valeurs sont saisies par l&apos;éleveur et n&apos;ont pas été
-                contrôlées par un tiers.
-              </span>
-            </li>
-          </ul>
-          <p className="text-white/30 text-[10px] mt-4 leading-relaxed">
-            Une visite de contrôle reste recommandée avant tout engagement financier. La régularité
-            des publications dans le temps est le meilleur indicateur disponible dans ce document.
-          </p>
+            <div className="mt-5 grid gap-4 sm:grid-cols-2">
+              <div className="rounded-xl bg-paper p-4">
+                <p className="font-mono text-[10px] uppercase tracking-[0.13em] text-ink-muted">Têtes déclarées</p>
+                <p className="mt-1 font-display text-3xl font-semibold text-ochre">{snapshot.nbTetes}</p>
+              </div>
+              <div className="rounded-xl bg-paper p-4">
+                <p className="font-mono text-[10px] uppercase tracking-[0.13em] text-ink-muted">Valeur estimée</p>
+                <p className="mt-1 break-words font-display text-2xl font-semibold text-sage">{fcfa(snapshot.valeurTotale)} <span className="font-sans text-xs font-medium">FCFA</span></p>
+              </div>
+            </div>
+
+            <div className="mt-3 grid gap-3 sm:grid-cols-3">
+              <div className="border-t border-leather/12 px-1 pt-3 sm:border-t-0 sm:border-l sm:pl-4">
+                <p className="text-xs text-ink-muted">Couverture vaccinale déclarée</p>
+                <p className="mt-1 font-display text-xl font-semibold text-sage">{snapshot.couvertureVaccinale}%</p>
+              </div>
+              <div className="border-t border-leather/12 px-1 pt-3 sm:border-l sm:border-t-0 sm:pl-4">
+                <p className="text-xs text-ink-muted">Revenus déclarés sur 12 mois</p>
+                <p className="mt-1 break-words font-display text-xl font-semibold text-ink">{fcfa(snapshot.revenus12m)} FCFA</p>
+              </div>
+              <div className="border-t border-leather/12 px-1 pt-3 sm:border-l sm:border-t-0 sm:pl-4">
+                <p className="text-xs text-ink-muted">Mois avec vente</p>
+                <p className="mt-1 font-display text-xl font-semibold text-ink">{snapshot.payload.moisActifs}/12</p>
+              </div>
+            </div>
+          </section>
+
+          {snapshot.payload.parEspece && (
+            <section className="mt-4 rounded-[18px] border border-leather/12 bg-paper-light p-5 sm:p-6" aria-labelledby="titre-composition">
+              <h2 id="titre-composition" className="font-display text-xl font-semibold text-leather">Composition déclarée</h2>
+              <dl className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
+                {Object.entries(snapshot.payload.parEspece).map(([espece, nombre]) => (
+                  <div key={espece} className="rounded-xl bg-paper p-3">
+                    <dt className="text-xs text-ink-muted">{espece}</dt>
+                    <dd className="mt-1 font-display text-xl font-semibold text-ink">{nombre}</dd>
+                  </div>
+                ))}
+              </dl>
+            </section>
+          )}
+
+          {snapshot.payload.ventes?.length > 0 && (
+            <section className="mt-4 rounded-[18px] border border-leather/12 bg-paper-light p-5 sm:p-6" aria-labelledby="titre-ventes">
+              <h2 id="titre-ventes" className="font-display text-xl font-semibold text-leather">Ventes déclarées sur douze mois</h2>
+              <div className="mt-4 overflow-x-auto">
+                <table className="w-full min-w-[430px] text-sm">
+                  <thead>
+                    <tr className="border-b border-leather/12 text-left text-xs text-ink-muted">
+                      <th className="py-2 pr-3 font-medium">Date</th>
+                      <th className="py-2 pr-3 font-medium">Acheteur</th>
+                      <th className="py-2 text-right font-medium">Montant</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {snapshot.payload.ventes.slice(0, 12).map((vente, index) => (
+                      <tr key={`${vente.date}-${index}`} className="border-b border-leather/8 last:border-0">
+                        <td className="whitespace-nowrap py-3 pr-3 text-ink-muted">{new Date(vente.date).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: '2-digit' })}</td>
+                        <td className="py-3 pr-3 text-ink">{vente.acheteur}</td>
+                        <td className="whitespace-nowrap py-3 text-right font-medium text-ochre">{fcfa(vente.prix)} FCFA</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </section>
+          )}
+
+          <section className="mt-4 rounded-[18px] border border-brick/20 bg-brick/[0.04] p-5 sm:p-6" aria-labelledby="titre-portee">
+            <h2 id="titre-portee" className="font-display text-xl font-semibold text-leather">Ce que ce relevé établit</h2>
+            <ul className="mt-4 space-y-3 text-sm leading-relaxed text-ink-soft">
+              <li className="flex gap-2.5"><span className="mt-0.5 text-sage" aria-hidden="true">✓</span><span>La date de publication, horodatée par le serveur et non modifiable.</span></li>
+              <li className="flex gap-2.5"><span className="mt-0.5 text-sage" aria-hidden="true">✓</span><span>Le nombre de relevés publiés et la date du premier relevé, lorsqu&apos;elle est disponible.</span></li>
+              <li className="flex gap-2.5"><span className="mt-0.5 text-brick" aria-hidden="true">!</span><span>L&apos;existence physique des animaux et les montants ne sont pas contrôlés par un tiers ; ces données sont déclarées par l&apos;éleveur.</span></li>
+            </ul>
+            <p className="mt-4 border-t border-brick/15 pt-4 text-xs leading-relaxed text-ink-muted">
+              Une visite de contrôle reste recommandée avant tout engagement financier. La régularité des publications ne remplace pas une vérification sur le terrain.
+            </p>
+          </section>
+
+          <p className="mt-5 text-center font-mono text-[10px] uppercase tracking-[0.13em] text-ink-muted">Passeport LivestockOS · {snapshot.code}</p>
         </div>
-
-        <p className="text-center text-white/20 text-[10px] mt-6">
-          Vérifié sur livestock-os.vercel.app — code {snapshot.code}
-        </p>
-      </div>
-    </div>
+      </main>
+      <PublicFooter />
+    </>
   )
 }

@@ -3,8 +3,8 @@ import type { Metadata, Viewport } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'LivestockOS — Gestion d\'élevage sahélien',
-  description: 'Application mobile de gestion d\'élevage pour éleveurs sahéliens. Suivi du cheptel, santé animale, mouvements et prix du marché.',
+  title: 'LivestockOS — Le carnet du berger, devenu numérique',
+  description: 'Un registre numérique pour suivre le cheptel, les soins et les ventes, et publier un passeport de suivi vérifiable.',
   manifest: '/manifest.json',
   icons: {
     icon: '/favicon.ico',
@@ -16,7 +16,7 @@ export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   maximumScale: 1,
-  themeColor: '#0A1628',
+  themeColor: '#F3EDDF',
 }
 
 export default function RootLayout({
@@ -26,7 +26,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="fr">
-      <body className="min-h-screen bg-[#0A1628] text-white antialiased">
+      <body className="min-h-screen bg-paper text-ink antialiased">
         {children}
       </body>
     </html>

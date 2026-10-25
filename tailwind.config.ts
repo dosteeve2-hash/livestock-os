@@ -9,12 +9,25 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        paper: '#F3EDDF',
+        'paper-light': '#FBF8F0',
+        'paper-deep': '#E7DDCA',
+        ink: '#30281F',
+        'ink-soft': '#5D5347',
+        leather: '#493729',
+        'leather-deep': '#2B241D',
+        ochre: '#875319',
+        'ochre-bright': '#C28B42',
+        sage: '#365744',
+        brick: '#8C4638',
         navy: '#0A1628',
         gold: '#D4AF37',
         cyan: '#00BCD4',
       },
-      backgroundImage: {
-        'gradient-navy': 'linear-gradient(135deg, #0A1628 0%, #1a2d4d 100%)',
+      fontFamily: {
+        display: ['Georgia', 'Cambria', 'serif'],
+        body: ['Aptos', 'Segoe UI', 'sans-serif'],
+        mono: ['Cascadia Code', 'Consolas', 'monospace'],
       },
     },
   },

@@ -1,0 +1,26 @@
+[
+    {
+        "slug":  "elevage-zebu",
+        "fichier":  "/images/photos/elevage-zebu.webp",
+        "width":  2400,
+        "height":  1600,
+        "titre":  "Pics boeuf à bec jaune et bovins.jpg",
+        "auteur":  "Desijwo",
+        "licence":  "CC BY-SA 4.0",
+        "licenceUrl":  "https://creativecommons.org/licenses/by-sa/4.0/deed.fr",
+        "source":  "https://commons.wikimedia.org/wiki/File:Pics_boeuf_%C3%A0_bec_jaune_et_bovins.jpg",
+        "modifications":  "Redimensionnée et convertie en WebP. Le fichier modifié reste sous la même licence."
+    },
+    {
+        "slug":  "elevage-troupeau",
+        "fichier":  "/images/photos/elevage-troupeau.webp",
+        "width":  1600,
+        "height":  1067,
+        "titre":  "Herd of cows eating straw under a tree.jpg",
+        "auteur":  "Hadepté",
+        "licence":  "CC BY-SA 4.0",
+        "licenceUrl":  "https://creativecommons.org/licenses/by-sa/4.0/deed.fr",
+        "source":  "https://commons.wikimedia.org/wiki/File:Herd_of_cows_eating_straw_under_a_tree.jpg",
+        "modifications":  "Redimensionnée et convertie en WebP. Le fichier modifié reste sous la même licence."
+    }
+]
