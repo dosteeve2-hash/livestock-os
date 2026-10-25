@@ -9,10 +9,10 @@ export default function AnimalFlipCard() {
   return (
     <div className="perspective-[1300px]">
       <div
-        className={`flip-panel preserve-3d relative min-h-[420px] rounded-[22px] shadow-[0_24px_70px_rgba(61,44,27,0.14)] ${flipped ? '[transform:rotateY(180deg)]' : ''}`}
+        className={`flip-panel preserve-3d relative min-h-[520px] rounded-[22px] shadow-[0_24px_70px_rgba(61,44,27,0.14)] ${flipped ? '[transform:rotateY(180deg)]' : ''}`}
       >
         <div
-          className="face-hidden absolute inset-0 overflow-hidden rounded-[22px] border border-leather/12 bg-paper-light p-5 sm:p-7"
+          className="face-hidden absolute inset-0 flex flex-col overflow-hidden rounded-[22px] border border-leather/12 bg-paper-light p-5 sm:p-7"
           inert={flipped}
         >
           <div className="flex items-start justify-between gap-4">
@@ -33,7 +33,7 @@ export default function AnimalFlipCard() {
           </dl>
           <p className="mt-4 text-xs leading-relaxed text-ink-muted">La carte présente les champs disponibles, sans inventer de dossier d&apos;élevage.</p>
 
-          <div className="absolute inset-x-5 bottom-5 inline-flex min-h-[48px] items-center justify-between rounded-full bg-leather px-5 text-sm font-semibold text-paper-light sm:inset-x-7 sm:bottom-7" aria-hidden="true">
+          <div className="mt-auto inline-flex min-h-[48px] items-center justify-between rounded-full bg-leather px-5 text-sm font-semibold text-paper-light" aria-hidden="true">
             Voir les soins et vaccinations
             <ArrowDown size={16} />
           </div>

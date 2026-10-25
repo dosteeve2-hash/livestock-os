@@ -9,7 +9,6 @@ import { useEffect, useRef, useState } from 'react'
 export default function HeroEnclos() {
   const scene = useRef<HTMLElement>(null)
   const [reducedMotion, setReducedMotion] = useState(false)
-  const [wideScreen, setWideScreen] = useState(false)
   const [entered, setEntered] = useState(false)
   const enteredRef = useRef(false)
 
@@ -17,28 +16,23 @@ export default function HeroEnclos() {
     target: scene,
     offset: ['start start', 'end end'],
   })
-  const top = useTransform(scrollYProgress, [0.05, 0.68], [wideScreen ? 11 : 58, 0])
+  const top = useTransform(scrollYProgress, [0.05, 0.68], [11, 0])
   const right = useTransform(scrollYProgress, [0.05, 0.68], [5, 0])
-  const bottom = useTransform(scrollYProgress, [0.05, 0.68], [wideScreen ? 8 : 4, 0])
-  const left = useTransform(scrollYProgress, [0.05, 0.68], [wideScreen ? 52 : 5, 0])
+  const bottom = useTransform(scrollYProgress, [0.05, 0.68], [8, 0])
+  const left = useTransform(scrollYProgress, [0.05, 0.68], [52, 0])
   const radius = useTransform(scrollYProgress, [0.05, 0.68], [18, 0])
   const clipPath = useMotionTemplate`inset(${top}% ${right}% ${bottom}% ${left}% round ${radius}px)`
   const imageScale = useTransform(scrollYProgress, [0, 0.68], [1.12, 1])
 
   useEffect(() => {
     const motionSetting = window.matchMedia('(prefers-reduced-motion: reduce)')
-    const viewportSetting = window.matchMedia('(min-width: 768px)')
     const updateMotion = () => setReducedMotion(motionSetting.matches)
-    const updateViewport = () => setWideScreen(viewportSetting.matches)
 
     updateMotion()
-    updateViewport()
     motionSetting.addEventListener('change', updateMotion)
-    viewportSetting.addEventListener('change', updateViewport)
 
     return () => {
       motionSetting.removeEventListener('change', updateMotion)
-      viewportSetting.removeEventListener('change', updateViewport)
     }
   }, [])
 
@@ -76,19 +70,21 @@ export default function HeroEnclos() {
 
   if (reducedMotion) {
     return (
-      <section className="leather-grain bg-leather-deep px-5 pb-8 pt-10 text-paper-light sm:px-8 sm:pb-12 sm:pt-14">
-        <div className="mx-auto grid max-w-7xl gap-8 md:grid-cols-[0.9fr_1.1fr] md:items-center md:gap-12">
-          <div>{content}</div>
-          <div className="relative aspect-[4/3] overflow-hidden rounded-[20px] bg-paper-deep">
-            <Image
-              src="/images/photos/elevage-zebu.webp"
-              alt="Un zébu brun au premier plan, suivi d’autres bovins."
-              fill
-              priority
-              sizes="(min-width: 768px) 52vw, 100vw"
-              className="object-cover"
-            />
-          </div>
+      <section className="leather-grain relative min-h-[100svh] overflow-hidden bg-leather-deep text-paper-light">
+        <div className="absolute inset-0 overflow-hidden md:left-[48%]">
+          <Image
+            src="/images/photos/elevage-zebu.webp"
+            alt="Un zébu brun au premier plan, suivi d’autres bovins."
+            fill
+            priority
+            sizes="(min-width: 768px) 52vw, 100vw"
+            className="scale-105 object-cover object-[57%_center] opacity-35 blur-[2px] md:scale-100 md:opacity-90 md:blur-0"
+          />
+        </div>
+        <div className="absolute inset-0 bg-leather-deep/55 md:bg-gradient-to-r md:from-leather-deep md:via-leather-deep/30 md:to-transparent" aria-hidden="true" />
+        <div className="relative z-10 mx-auto grid min-h-[100svh] max-w-7xl gap-8 px-5 pb-12 pt-[9svh] sm:px-8 md:grid-cols-[0.9fr_1.1fr] md:items-center md:gap-12 md:py-12">
+          <div className="max-w-xl md:max-w-[85%]">{content}</div>
+          <div aria-hidden="true" />
         </div>
       </section>
     )
@@ -97,25 +93,44 @@ export default function HeroEnclos() {
   return (
     <section ref={scene} className="relative h-[185svh] bg-leather-deep md:h-[200svh]" aria-label="Découvrir le registre LivestockOS">
       <div className="leather-grain sticky top-0 h-[100svh] min-h-[640px] overflow-hidden bg-leather-deep">
+        <div className="absolute inset-0 z-0 overflow-hidden md:left-[48%]">
+          <Image
+            src="/images/photos/elevage-zebu.webp"
+            alt="Un zébu brun au premier plan, suivi d’autres bovins."
+            fill
+            priority
+            sizes="(min-width: 768px) 52vw, 100vw"
+            className="scale-105 object-cover object-[57%_center] opacity-35 blur-[2px] md:scale-100 md:opacity-90 md:blur-0"
+          />
+        </div>
+        <div className="absolute inset-0 z-[1] bg-leather-deep/55 md:bg-gradient-to-r md:from-leather-deep md:via-leather-deep/30 md:to-transparent" aria-hidden="true" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_78%_34%,rgba(128,93,51,0.2),transparent_45%)]" aria-hidden="true" />
 
-        <div className="absolute inset-0 z-10 mx-auto flex max-w-7xl items-start px-5 pt-[9svh] sm:px-8 md:items-center md:pt-0">
-          <div className="max-w-xl md:max-w-[47%]" inert={entered}>
+        <motion.div
+          initial={false}
+          animate={{ opacity: entered ? 0 : 1 }}
+          transition={{ duration: 0.4 }}
+          className="absolute inset-0 z-30 mx-auto flex max-w-7xl items-start px-5 pt-[9svh] sm:px-8 md:items-center md:pt-0"
+          inert={entered}
+        >
+          <div className="max-w-xl md:max-w-[47%]">
             {content}
           </div>
-        </div>
+        </motion.div>
 
         <motion.div style={{ clipPath }} className="absolute inset-0 z-20 overflow-hidden will-change-[clip-path]">
-          <motion.div style={{ scale: imageScale }} className="absolute inset-0">
+          <motion.div style={{ scale: imageScale }} className="absolute inset-0 blur-[2px] md:blur-0">
             <Image
               src="/images/photos/elevage-zebu.webp"
-              alt="Un zébu brun au premier plan, suivi d’autres bovins."
+              alt=""
+              aria-hidden="true"
               fill
               priority
               sizes="100vw"
               className="object-cover object-[57%_center]"
             />
           </motion.div>
+          <div className="absolute inset-0 bg-gradient-to-r from-leather-deep/95 via-leather-deep/70 to-transparent" aria-hidden="true" />
           <div className="absolute inset-0 bg-gradient-to-t from-leather-deep/90 via-leather-deep/15 to-leather-deep/10" aria-hidden="true" />
           <motion.div
             initial={false}
