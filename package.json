@@ -9,7 +9,8 @@
     "lint": "eslint",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
-    "plan:activer": "node scripts/activer-plan.mjs"
+    "plan:activer": "node scripts/activer-plan.mjs",
+    "paiement:liste": "node scripts/paiements-en-attente.mjs"
   },
   "dependencies": {
     "better-auth": "^1.7.1",
