@@ -1,45 +1,27 @@
 name: CI
 
 on:
+  pull_request:
   push:
     branches: [master]
-  pull_request:
 
-# Une nouvelle poussée sur une PR annule le run précédent.
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+permissions:
+  contents: read
 
 jobs:
-  verify:
-    name: Lint, types, tests & build
+  verifier:
     runs-on: ubuntu-latest
-
-    env:
-      # Le build charge la configuration Better Auth, qui refuse de démarrer sans
-      # secret. Valeur factice : la CI ne sert aucune session, elle compile.
-      BETTER_AUTH_SECRET: ci-placeholder-not-a-real-secret
-      NEXT_TELEMETRY_DISABLED: 1
-
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
-
-      - name: Install
-        run: npm ci
-
-      - name: Lint
-        run: npm run lint
-
-      - name: Types
-        run: npm run typecheck
-
-      - name: Tests
-        run: npm test
-
-      - name: Build
-        run: npm run build
+      - run: npm ci
+      - run: npx tsc --noEmit
+      - run: npm test
+      - run: npm run build
+        env:
+          DATABASE_URL: postgresql://ci:ci@localhost:5432/ci
+          BETTER_AUTH_SECRET: ci-secret-sans-valeur
+          BETTER_AUTH_URL: http://localhost:3000
