@@ -1,4 +1,6 @@
-# 🐄 LivestockOS
+<p align="center"><img src="docs/brand/mark.svg" alt="LivestockOS" width="72" height="72"></p>
+
+<h1 align="center">🐄 LivestockOS</h1>
 
 > Système de gestion d'élevage mobile pour éleveurs sahéliens.
 
