@@ -4,6 +4,8 @@
 
 > Système de gestion d'élevage mobile pour éleveurs sahéliens.
 
+**Statut :** pilote en ligne https://livestock-os-ashy.vercel.app ; plans et limite gratuite affichés ; activation des abonnements manuelle.
+
 [![Status](https://img.shields.io/badge/Status-En%20conception-blue)](.)
 [![Part of FORGE Afrika](https://img.shields.io/badge/FORGE%20Afrika-Ecosystem-D4AF37)](https://github.com/dosteeve2-hash/forge-afrika)
 
