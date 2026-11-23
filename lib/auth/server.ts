@@ -2,6 +2,8 @@ import { betterAuth } from 'better-auth'
 import { nextCookies } from 'better-auth/next-js'
 import { Pool } from 'pg'
 
+import { sslPourPostgres } from '@/lib/db/ssl'
+
 /**
  * Authentification — Neon Postgres + Better Auth.
  *
@@ -16,8 +18,10 @@ import { Pool } from 'pg'
 export const auth = betterAuth({
   database: new Pool({
     connectionString: process.env.DATABASE_URL,
-    // Neon impose TLS.
-    ssl: process.env.DATABASE_URL?.includes('localhost') ? false : { rejectUnauthorized: true },
+    // Neon impose TLS. La décision se prend sur l'hôte, jamais sur la chaîne :
+    // voir `lib/db/ssl.ts` pour les trois URL de production qu'un test par
+    // sous-chaîne laissait passer en clair.
+    ssl: sslPourPostgres(process.env.DATABASE_URL),
   }),
   secret: process.env.BETTER_AUTH_SECRET,
   baseURL: process.env.BETTER_AUTH_URL,

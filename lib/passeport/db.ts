@@ -1,6 +1,8 @@
 import { randomBytes } from 'node:crypto'
 import { Pool } from 'pg'
 
+import { sslPourPostgres } from '@/lib/db/ssl'
+
 /**
  * Publication et vérification des passeports.
  *
@@ -16,9 +18,7 @@ function db() {
   if (!pool) {
     pool = new Pool({
       connectionString: process.env.DATABASE_URL,
-      ssl: process.env.DATABASE_URL?.includes('localhost')
-        ? false
-        : { rejectUnauthorized: true },
+      ssl: sslPourPostgres(process.env.DATABASE_URL),
       max: 3,
     })
   }
