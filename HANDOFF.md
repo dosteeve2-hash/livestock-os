@@ -1,6 +1,6 @@
 # Handoff — sécurité de connexion LivestockOS
 
-Mis à jour le 24 novembre 2026 à 23:10 (Europe/Istanbul).
+Mis à jour le 24 novembre 2026 à 23:18 (Europe/Istanbul).
 
 ## État du dépôt
 
@@ -28,10 +28,11 @@ Mis à jour le 24 novembre 2026 à 23:10 (Europe/Istanbul).
 - `git diff --check` : réussi.
 - CI GitHub de la PR #17 : Lint, Types, Tests et Build réussis. GitHub signale que les actions checkout/setup-node ciblent Node 20, qui est déprécié et sera forcé sur Node 24.
 - Le parcours réel avec Neon, la table `rateLimit`, les cookies, le rate limit et les routes d'onboarding n'a pas été testé; la migration n'a pas été appliquée à Neon. La Preview Vercel est déployée, mais la Production n'a pas été modifiée.
+- Contrôle visuel du 24/11 : l'URL Preview redirige vers la connexion Vercel (vercel.com/login, route sso-api). Les pages de l'application et le parcours utilisateur restent donc visuellement non vérifiés; aucun identifiant n'a été saisi. La protection Preview reste active.
 
 ## Prochaines étapes
 
 1. Avant déploiement, examiner le `search_path`, la table `account`, l'index `account_issuer_accountId_uidx`, les doublons `providerId/accountId` et les droits DDL/DML du rôle applicatif.
 2. Appliquer la migration sur une base Preview isolée après sauvegarde; vérifier les 429, les délais, la réponse égale pour adresse nouvelle/existante, le cookie, connexion et déconnexion.
 3. Confirmer la présence de `DATABASE_URL`, `BETTER_AUTH_SECRET` et `BETTER_AUTH_URL` dans l'environnement Preview sans inscrire leurs valeurs dans les journaux.
-4. Vérifier le parcours dans la Preview Vercel avec une base Preview isolée, appliquer la migration seulement après contrôle du schéma, puis passer la PR en revue avant merge. Prévoir séparément la migration Production avant de déployer le code.
+4. Obtenir l'accès propriétaire à la Preview, vérifier le parcours avec une base Preview isolée et appliquer la migration seulement après contrôle du schéma; faire relire la PR avant merge. Prévoir séparément la migration Production avant de déployer le code.
