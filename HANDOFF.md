@@ -7,7 +7,7 @@ Mis à jour le 24 novembre 2026 à 23:03 (Europe/Istanbul).
 - Worktree isolé : `C:\Users\pc\Documents\GitHub\_wt-autopilot-livestock-auth`.
 - Branche : `autopilot/livestock-auth`, basée sur `origin/master` (`8021b816`). La PR #4 est déjà fusionnée.
 - Le dépôt principal reste sur `master`, trois commits derrière `origin/master`, avec un dossier `.claude/` non suivi laissé intact.
-- Changements locaux non commités et non poussés; aucune PR créée pour le moment.
+- Commit local `d3b6591` créé; branche non poussée et aucune PR créée pour le moment.
 
 ## Changements préparés
 
