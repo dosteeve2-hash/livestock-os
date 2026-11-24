@@ -1,11 +1,44 @@
 'use client'
 
-import { useActionState } from 'react'
-import { registerAction } from './actions'
+import { useState, type FormEvent } from 'react'
+import { authClient } from '@/lib/auth/client'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
 export default function RegisterPage() {
-  const [state, formAction, isPending] = useActionState(registerAction, null)
+  const router = useRouter()
+  const [state, setState] = useState<{ error: string } | null>(null)
+  const [isPending, setIsPending] = useState(false)
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    setState(null)
+    setIsPending(true)
+
+    const formData = new FormData(event.currentTarget)
+    const email = formData.get('email')?.toString().trim() ?? ''
+    const password = formData.get('password')?.toString() ?? ''
+    const nom = formData.get('nom')?.toString().trim() ?? ''
+
+    try {
+      const { error } = await authClient.signUp.email({
+        email,
+        password,
+        name: nom || email.split('@')[0],
+      })
+
+      if (error) {
+        setState({ error: 'Inscription impossible. Vérifiez vos informations et réessayez.' })
+        return
+      }
+
+      router.replace('/auth/login?registered=true')
+    } catch {
+      setState({ error: 'Inscription impossible. Vérifiez votre réseau et réessayez.' })
+    } finally {
+      setIsPending(false)
+    }
+  }
 
   return (
     <div className="min-h-screen bg-[#0A1628] flex flex-col items-center justify-center px-6 py-12">
@@ -20,7 +53,7 @@ export default function RegisterPage() {
       <div className="w-full max-w-sm bg-white/5 border border-white/10 rounded-2xl p-6">
         <h2 className="text-lg font-bold text-white mb-6">Inscription gratuite</h2>
 
-        <form action={formAction} className="space-y-4">
+        <form method="post" onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-white/70 text-sm mb-2" htmlFor="nom">
               Nom complet
@@ -59,6 +92,8 @@ export default function RegisterPage() {
               name="password"
               type="password"
               required
+              minLength={8}
+              maxLength={128}
               autoComplete="new-password"
               placeholder="8 caractères minimum"
               className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-[#D4AF37] transition-colors text-sm"

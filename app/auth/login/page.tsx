@@ -1,16 +1,44 @@
 'use client'
 
-import { useActionState } from 'react'
-import { loginAction } from './actions'
+import { useState, type FormEvent } from 'react'
+import { authClient } from '@/lib/auth/client'
 import Link from 'next/link'
-import { useSearchParams } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { Suspense } from 'react'
 
 function LoginForm() {
   const searchParams = useSearchParams()
   const isDemo = searchParams.get('demo') === 'true'
+  const isRegistered = searchParams.get('registered') === 'true'
+  const router = useRouter()
 
-  const [state, formAction, isPending] = useActionState(loginAction, null)
+  const [state, setState] = useState<{ error: string } | null>(null)
+  const [isPending, setIsPending] = useState(false)
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    setState(null)
+    setIsPending(true)
+
+    const formData = new FormData(event.currentTarget)
+    const email = formData.get('email')?.toString().trim() ?? ''
+    const password = formData.get('password')?.toString() ?? ''
+
+    try {
+      const { error } = await authClient.signIn.email({ email, password })
+
+      if (error) {
+        setState({ error: 'Email ou mot de passe incorrect' })
+        return
+      }
+
+      router.replace(isRegistered ? '/dashboard/onboarding' : '/dashboard')
+    } catch {
+      setState({ error: 'Connexion impossible. Vérifiez votre réseau et réessayez.' })
+    } finally {
+      setIsPending(false)
+    }
+  }
 
   return (
     <div className="min-h-screen bg-[#0A1628] flex flex-col items-center justify-center px-6 py-12">
@@ -43,7 +71,13 @@ function LoginForm() {
           </div>
         </div>
 
-        <form action={formAction} className="space-y-4">
+        {isRegistered && (
+          <div className="mb-4 bg-emerald-500/10 border border-emerald-500/30 rounded-xl px-4 py-3 text-emerald-300 text-sm">
+            Inscription traitée. Connectez-vous pour accéder à votre espace.
+          </div>
+        )}
+
+        <form method="post" onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-white/70 text-sm mb-2" htmlFor="email">
               Email
@@ -69,6 +103,7 @@ function LoginForm() {
               name="password"
               type="password"
               required
+              maxLength={128}
               autoComplete="current-password"
               defaultValue={isDemo ? 'Demo2026!' : ''}
               placeholder="••••••••"
