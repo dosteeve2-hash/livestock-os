@@ -13,10 +13,10 @@
     "paiement:liste": "node scripts/paiements-en-attente.mjs"
   },
   "dependencies": {
-    "better-auth": "^1.7.1",
+    "better-auth": "^1.7.28",
     "framer-motion": "^11.18.2",
     "lucide-react": "^0.469.0",
-    "next": "^16.3.2",
+    "next": "^16.4.6",
     "pg": "^8.23.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
@@ -32,6 +32,6 @@
     "postcss": "^8",
     "tailwindcss": "^3.4.19",
     "typescript": "^5",
-    "vitest": "^4.1.11"
+    "vitest": "^4.1.12"
   }
 }

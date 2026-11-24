@@ -25,6 +25,16 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
     minPasswordLength: 8,
+    autoSignIn: false,
+  },
+
+  rateLimit: {
+    enabled: true,
+    storage: 'database',
+    customRules: {
+      '/sign-in/email': { window: 60, max: 5 },
+      '/sign-up/email': { window: 60, max: 3 },
+    },
   },
 
   session: {
@@ -33,7 +43,7 @@ export const auth = betterAuth({
     updateAge: 60 * 60 * 24,
   },
 
-  // `nextCookies` doit rester le dernier plugin : c'est lui qui autorise les
-  // Server Actions à poser le cookie de session.
+  // `nextCookies` doit rester le dernier plugin pour synchroniser les cookies
+  // quand les API Better Auth sont appelées depuis Next.js côté serveur.
   plugins: [nextCookies()],
 })

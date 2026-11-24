@@ -47,7 +47,7 @@ openssl rand -base64 32
 Better Auth génère lui-même son schéma (`user`, `session`, `account`, `verification`) :
 
 ```bash
-npx @better-auth/cli migrate
+npx auth@1.7.28 migrate --config ./lib/auth/server.ts
 ```
 
 La commande lit `DATABASE_URL` depuis `.env.local` et applique le schéma sur Neon.
@@ -56,7 +56,7 @@ Répondre `y` à la demande de confirmation.
 Pour seulement inspecter le SQL sans l'appliquer :
 
 ```bash
-npx @better-auth/cli generate
+npx auth@1.7.28 generate --config ./lib/auth/server.ts
 ```
 
 Puis les tables métier (passeports, abonnements), à coller dans le **SQL Editor** de Neon :
@@ -64,6 +64,42 @@ Puis les tables métier (passeports, abonnements), à coller dans le **SQL Edito
 ```bash
 scripts/migrations/001_abonnement.sql
 ```
+
+### Limiter les tentatives de connexion et d'inscription
+
+Avant de déployer la configuration Better Auth avec stockage du rate limit en base,
+appliquer `scripts/migrations/003_better_auth_rate_limit.sql` dans le SQL Editor de Neon.
+La migration crée la table `rateLimit` utilisée par Better Auth 1.7.28 et rend facultative,
+si elle existe, l'ancienne colonne `account.issuer` exigée par les versions 1.7.0 à 1.7.2.
+La migration est idempotente et transactionnelle. Faire une sauvegarde et prévoir une courte
+fenêtre de maintenance auth. Dans le SQL Editor, vérifier la base et les comptes avant l'application :
+
+```sql
+SELECT current_database(), current_schema();
+
+SELECT column_name, is_nullable
+FROM information_schema.columns
+WHERE table_schema = current_schema()
+  AND table_name = 'account'
+  AND column_name = 'issuer';
+
+SELECT to_regclass('"account_issuer_accountId_uidx"') IS NOT NULL AS legacy_issuer_index_exists;
+
+SELECT count(*) AS duplicate_provider_account_groups
+FROM (
+  SELECT "providerId", "accountId"
+  FROM "account"
+  GROUP BY "providerId", "accountId"
+  HAVING count(*) > 1
+) AS duplicates;
+```
+
+Ne pas appliquer la migration si la base, le schéma ou des doublons inattendus sont détectés;
+vérifier aussi que le rôle utilisé par l'application peut lire, insérer, mettre à jour et supprimer
+dans `rateLimit`.
+Les appels sont limités à 5 connexions et 3 inscriptions par minute. Le formulaire utilise les
+endpoints HTTP Better Auth afin que cette limite s'applique; l'inscription ne connecte pas automatiquement
+l'utilisateur pour retourner la même réponse qu'une adresse soit nouvelle ou déjà enregistrée.
 
 ### Activer un plan payant (manuel, pour les premiers clients)
 
@@ -86,12 +122,12 @@ npm run dev
 
 Parcours à valider dans l'ordre :
 
-1. `/auth/register` — créer un compte, redirection attendue vers `/dashboard/onboarding`
-2. Déconnexion depuis l'en-tête
-3. `/auth/login` — se reconnecter, redirection attendue vers `/dashboard`
-4. `/dashboard/animaux` — ajouter un animal, **recharger la page** : il doit toujours être là
-5. `/dashboard/ventes` — vendre cet animal, vérifier qu'il disparaît du cheptel et apparaît dans le chiffre d'affaires
-6. Ouvrir un second compte : son cheptel doit être vide (cloisonnement par utilisateur)
+1. `/auth/register` — créer un compte; le message de confirmation reste identique si l'adresse était déjà utilisée.
+2. `/auth/login` — se connecter manuellement; après inscription, redirection attendue vers `/dashboard/onboarding`.
+3. Déconnexion depuis l'en-tête, puis `/auth/login` — redirection attendue vers `/dashboard`.
+4. `/dashboard/animaux` — ajouter un animal, **recharger la page** : il doit toujours être là.
+5. `/dashboard/ventes` — vendre cet animal, vérifier qu'il disparaît du cheptel et apparaît dans le chiffre d'affaires.
+6. Ouvrir un second compte : son cheptel doit être vide (cloisonnement par utilisateur).
 
 ---
 
@@ -111,7 +147,7 @@ Ajouter les trois variables dans **Project Settings → Environment Variables** 
 
 **Pourquoi Better Auth et non le SDK managé de Neon ?**
 `@neondatabase/auth` était en `0.5.0-beta` au moment du choix, avec 82 000 téléchargements hebdomadaires.
-Better Auth — la bibliothèque que ce SDK enveloppe — est en `1.7.1` stable avec 7,2 millions.
+Better Auth — la bibliothèque que ce SDK enveloppe — est verrouillée en `1.7.28` dans `package-lock.json`.
 L'authentification d'un produit vendu n'est pas l'endroit où dépendre d'une bêta.
 
 **Pourquoi les données métier ne sont-elles pas dans Neon ?**
