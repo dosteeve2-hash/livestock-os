@@ -1,13 +1,15 @@
 # Handoff — sécurité de connexion LivestockOS
 
-Mis à jour le 24 novembre 2026 à 23:03 (Europe/Istanbul).
+Mis à jour le 24 novembre 2026 à 23:10 (Europe/Istanbul).
 
 ## État du dépôt
 
 - Worktree isolé : `C:\Users\pc\Documents\GitHub\_wt-autopilot-livestock-auth`.
 - Branche : `autopilot/livestock-auth`, basée sur `origin/master` (`8021b816`). La PR #4 est déjà fusionnée.
 - Le dépôt principal reste sur `master`, trois commits derrière `origin/master`, avec un dossier `.claude/` non suivi laissé intact.
-- Commit local `d3b6591` créé; branche non poussée et aucune PR créée pour le moment.
+- Commits `d3b6591` et `f16e259` poussés sur `origin/autopilot/livestock-auth`.
+- PR brouillon #17 : `https://github.com/dosteeve2-hash/livestock-os/pull/17`.
+- Vercel indique Preview Ready : `https://livestock-os-git-autopilot-live-fd826d-dosteeve2-8163s-projects.vercel.app`.
 
 ## Changements préparés
 
@@ -24,11 +26,12 @@ Mis à jour le 24 novembre 2026 à 23:03 (Europe/Istanbul).
 - `npm run build` : réussi, 20 routes. Le build local avertit que `BETTER_AUTH_SECRET` et `BETTER_AUTH_URL` ne sont pas configurés; aucune valeur de secret n'a été lue ou écrite.
 - `npm audit` : 0 vulnérabilité après mise à jour.
 - `git diff --check` : réussi.
-- Le parcours réel avec Neon, la table `rateLimit`, les cookies, le rate limit et les routes d'onboarding n'a pas été testé; la migration n'a pas été appliquée à Neon. Pas de déploiement ni de changement Production.
+- CI GitHub de la PR #17 : Lint, Types, Tests et Build réussis. GitHub signale que les actions checkout/setup-node ciblent Node 20, qui est déprécié et sera forcé sur Node 24.
+- Le parcours réel avec Neon, la table `rateLimit`, les cookies, le rate limit et les routes d'onboarding n'a pas été testé; la migration n'a pas été appliquée à Neon. La Preview Vercel est déployée, mais la Production n'a pas été modifiée.
 
 ## Prochaines étapes
 
 1. Avant déploiement, examiner le `search_path`, la table `account`, l'index `account_issuer_accountId_uidx`, les doublons `providerId/accountId` et les droits DDL/DML du rôle applicatif.
 2. Appliquer la migration sur une base Preview isolée après sauvegarde; vérifier les 429, les délais, la réponse égale pour adresse nouvelle/existante, le cookie, connexion et déconnexion.
 3. Confirmer la présence de `DATABASE_URL`, `BETTER_AUTH_SECRET` et `BETTER_AUTH_URL` dans l'environnement Preview sans inscrire leurs valeurs dans les journaux.
-4. Après revue, pousser la branche et ouvrir la PR demandée. Prévoir séparément la migration Production avant de déployer le code.
+4. Vérifier le parcours dans la Preview Vercel avec une base Preview isolée, appliquer la migration seulement après contrôle du schéma, puis passer la PR en revue avant merge. Prévoir séparément la migration Production avant de déployer le code.
